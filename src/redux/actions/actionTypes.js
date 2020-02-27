@@ -1,0 +1,5 @@
+const TOGGLE_UPVOTE = 'TOGGLE_UPVOTED';
+
+export {
+  TOGGLE_UPVOTE,
+};

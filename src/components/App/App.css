@@ -1,0 +1,121 @@
+* {
+    -webkit-overflow-scrolling: touch;
+}
+
+.ant-btn-primary {
+  background-color: #1DB954;
+  border-color: #1DB954;
+  color: white;
+}
+
+.ant-btn-primary:hover {
+  background-color: #1DB954;
+  border-color: #1DB954;
+  color: white;
+  transform: scale(1.1);
+}
+
+.ant-btn-primary:active {
+  background-color: #1DB954;
+  border-color: #1DB954;
+  color: white;
+}
+
+.ant-btn-primary:focus {
+  background-color: #1DB954;
+  border-color: #1DB954;
+  color: white;
+}
+
+.ant-btn-default:hover {
+  border-color: #1DB954;
+  color: #1DB954;
+  transform: scale(1.1);
+}
+
+.ant-btn-default:active {
+  background-color: white;
+  border-color: white;
+  color: inherit;
+}
+
+.ant-btn-default:focus {
+  background-color: white;
+  border-color: white;
+  color: inherit;
+}
+
+.upvote-button {
+  background: none !important;
+  border: none;
+  color: white;
+  font-weight: 600;
+}
+
+.upvote-button:active {
+  border: none;
+  color: white;
+  font-weight: 600;
+}
+
+.upvote-button:focus {
+  border: none;
+  color: white;
+  font-weight: 600;
+}
+
+.upvote-button:hover {
+  color: #1DB954;
+  font-weight: 600;
+  transform: scale(1.3);
+}
+
+.upvote-button-upvoted {
+  background: none !important;
+  border: none;
+  font-weight: 600;
+  color: #1DB954;
+}
+
+.upvote-button-upvoted:active {
+  background: none !important;
+  border: none;
+  color: #1DB954;
+}
+
+.upvote-button-upvoted:focus {
+  background: none !important;
+  border: none;
+  color: #1DB954;
+}
+
+.upvote-button-upvoted:hover {
+  color: #1DB954;
+  transform: scale(1.3);
+}
+
+.ant-btn-ghost:hover {
+  opacity: .7;
+}
+
+.ant-list {
+  background-color: #191414;
+  border: none;
+}
+
+.ant-list-item {
+  border: none !important;
+  position: relative;
+  line-height: 60px;
+}
+
+.ant-list-item::before {
+  content: "";
+  position: absolute;
+  width: 60%;
+  height: 1px !important;
+  border-bottom: 1px solid #222;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
