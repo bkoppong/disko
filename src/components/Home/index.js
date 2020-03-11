@@ -1,104 +1,108 @@
-import React from 'react'
-
-import { useSelector } from 'react-redux';
-
-import {
-  useFirebase,
-  isLoaded,
-  isEmpty,
-} from 'react-redux-firebase';
-
-import Todos from '../Todos'
-import NewTodo from '../NewTodo'
+import React, {
+  useState,
+} from 'react';
 
 import {
-  Layout,
+  Link,
+  useHistory,
+} from 'react-router-dom';
+
+import {
   Row,
   Col,
-  Typography,
+  Button,
+  Input,
 } from 'antd';
 
-import backgroundImage from './yosemite.jpg';
+import './index.css';
 
-const { Header, Content } = Layout;
-const { Title } = Typography;
+const Home = props => {
 
+  const [roomIdToJoin, setRoomIdToJoin] = useState('');
+  const history = useHistory();
 
-function Home() {
+  const handleRoomIdInputChange = (event) => {
+    setRoomIdToJoin(event.target.value);
+  };
 
-  const firebase = useFirebase();
+  const handleJoinRoom = () => {
+    if (roomIdToJoin) {
+      history.push(`/room/${roomIdToJoin}`);
+    }
+  };
 
-  firebase.auth().signInAnonymously().then(signInResult => {
-    // do stuff with signInResult.user
-  }).catch(function(error) {
-    // Handle Errors here.
-    let errorCode = error.code;
-    let errorMessage = error.message;
-    console.log(errorMessage)
-    // ...
-  });
-
-  const auth = useSelector(state => state.firebase.auth);
-
-  if (!isLoaded(auth)) {
-    return <div>hi</div>;
-  }
+  const roomJoinButtonDisabled = false;
 
   return (
-    <Layout style={{
-        minHeight: '100vh',
-        maxHeight: '100vh',
-        overflow: 'scroll',
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-      }}>
-      <Header style={{
-          position: 'fixed',
-          width: '100%',
-          zIndex: '1',
-          backgroundColor: '#191414',
-          height: '80px',
-          lineHeight: '80px',
-        }}>
-        <NewTodo />
-      </Header>
-      <Content style={{
-          paddingTop: '100px',
-          paddingBottom: '80px',
-        }}>
-            <Row
-              type="flex"
-              justify="center"
+    <Row
+      type="flex"
+      justify="center"
+      align="middle"
+      style={{
+        height: '100%',
+        width: '100%',
+      }}
+    >
+      <Col
+        xs={24}
+        md={12}
+        lg={10}
+      >
+        <Row style={{
+            marginBottom: '30px',
+          }}>
+          <Input
+            className="room-code-input"
+            placeholder="Enter a room code..."
+            onChange={handleRoomIdInputChange}
+            onPressEnter={handleJoinRoom}
+          />
+        </Row>
+        <Row
+          type="flex"
+          justify="center"
+          style={{
+            marginBottom: '30px',
+          }}
+        >
+            <Button
+              type="primary"
+              onClick={handleJoinRoom}
+              disabled={roomJoinButtonDisabled}
+              block
+              style={{
+                height: '80px',
+                fontSize: '2em',
+              }}
             >
-              <Col>
-                <Title
-                  style={{
-                    textShadow: '0px 2px 7px #555',
-                  }}
-                >
-                  Queueify
-                </Title>
-              </Col>
-            </Row>
-            <Row
-              type="flex"
-              justify="center"
-            >
-              <Col
-                xs={20}
-                md={12}
-                lg={6}
+              JOIN
+            </Button>
+        </Row>
+        <Row
+          type="flex"
+          justify="center"
+          style={{
+            marginBottom: '30px',
+          }}
+        >
+          <Col flex="auto">
+            <Link to="/host">
+              <Button
+                type="link"
                 style={{
-                  marginBottom: '80px',
+                  fontSize: '2em',
                 }}
               >
-                <Todos />
-              </Col>
-            </Row>
-      </Content>
-    </Layout>
-  )
-}
+                HOST
+              </Button>
+            </Link>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
 
-export default Home
+  );
+
+};
+
+export default Home;
