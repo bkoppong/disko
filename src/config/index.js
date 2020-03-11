@@ -10,7 +10,7 @@ export const firebase = {
 };
 
 export const rrfConfig = {
-  userProfile: 'users',
+  userProfile: 'hosts',
   useFirestoreForProfile: true, // Store in Firestore instead of Real Time DB
   enableLogging: false
 }
