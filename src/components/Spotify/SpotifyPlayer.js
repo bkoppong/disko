@@ -126,7 +126,8 @@ const SpotifyPlayer = ({
       });
       // this is trash
       let cleanedRequests = requestsList
-        .filter(request => request.creationTimestamp && !request.fulfilled)
+        .filter(request => request.creationTimestamp &&
+          !request.fulfilled && !request.queued)
         .sort((a, b) => {
           let upvotesDifference = b.upvotesCount - a.upvotesCount;
           if (upvotesDifference) return upvotesDifference;
@@ -182,19 +183,23 @@ const SpotifyPlayer = ({
         const requestDocList = [];
         if (!requestCollectionSnapList.empty) {
           requestCollectionSnapList.forEach(requestDocSnap => {
-            const requestDocData = requestDocSnap.data();
+            let requestDocData = requestDocSnap.data();
+            requestDocData = {
+              ref: requestDocSnap.ref,
+              ...requestDocData
+            };
             requestDocList.push(requestDocData);
           });
         }
         const queuedRequests = requestDocList
-          .filter(requestDoc => requestDoc.queued &&
-            requestDoc.trackUri === currentPlaybackUri);
-        if (queuedRequests.length) {
-          queuedRequests.forEach(queuedRequest => {
-            queuedRequest.ref.update({
-              fulfilled: true,
-              fulfillTimestamp: firestoreServerTimestamp(),
-            });
+          .filter(requestDoc => requestDoc.queued);
+        const currentlyPlayingQueuedSong = queuedRequests.find(
+          (queuedRequest) => queuedRequest.trackData.uri === currentPlaybackUri
+        );
+        if (currentlyPlayingQueuedSong) {
+          currentlyPlayingQueuedSong.ref.update({
+            fulfilled: true,
+            fulfillTimestamp: firestoreServerTimestamp(),
           });
         }
       }
