@@ -138,6 +138,80 @@ const Queue = props => {
   //   .sort((a, b) => {
   //     return b.fulfillTimestamp.seconds - a.fulfillTimestamp.seconds;
   //   }).find(() => {return true});
+  const renderComingUp = () => {
+    if (!sortedCleanedResults.length) {
+      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />; // TODO: Make more attractive, center
+    }
+    let flipKey = sortedCleanedResults.map(result => result.id).join('');
+
+    const loadMore =
+        isLoaded(requests) && !isEmpty(requests) && cleanedRequests.length > limit ? (
+          <div
+            style={{
+              textAlign: 'center',
+              margin: 8,
+              height: 50,
+              lineHeight: '40px',
+            }}
+          >
+            <Button
+              type="ghost"
+              onClick={onLoadMore}
+              style={{
+                border: 'none',
+                fontWeight: '600',
+                color: 'white',
+              }}
+            >
+              Load More
+            </Button>
+          </div>
+        ) : null;
+    return (
+      <>
+        <Row>
+          <Title
+            level={4}
+            style={{
+              color: 'white',
+            }}
+          >
+            Coming Up
+          </Title>
+        </Row>
+        <PageVisibility onChange={handleVisibilityChange}>
+          <Flipper flipKey={flipKey}>
+            <List
+              size="small"
+              loadMore={loadMore}
+            >
+              {
+                sortedCleanedResults.map((request, index) =>
+                  <Flipped
+                    key={request.id}
+                    flipId={request.id}
+                  >
+                    <div>
+                      <QueueItem
+                        disabled={true}
+                        index={index}
+                        key={`${index}_${request.id}`}
+                        uid={uid}
+                        roomId={roomId}
+                        request={request}
+                        pageIsVisible={pageIsVisible}
+                      />
+                    </div>
+
+                  </Flipped>
+                )
+              }
+            </List>
+          </Flipper>
+        </PageVisibility>
+      </>
+    );
+  };
 
   const justQueued = requests
     .filter(request => request.queueTimestamp)
@@ -247,79 +321,12 @@ const Queue = props => {
     );
   }
 
-  if (!sortedCleanedResults.length) {
-    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />; // TODO: Make more attractive, center
-  }
 
-  let flipKey = sortedCleanedResults.map(result => result.id).join('');
-
-  const loadMore =
-      isLoaded(requests) && !isEmpty(requests) && cleanedRequests.length > limit ? (
-        <div
-          style={{
-            textAlign: 'center',
-            margin: 8,
-            height: 50,
-            lineHeight: '40px',
-          }}
-        >
-          <Button
-            type="ghost"
-            onClick={onLoadMore}
-            style={{
-              border: 'none',
-              fontWeight: '600',
-              color: 'white',
-            }}
-          >
-            Load More
-          </Button>
-        </div>
-      ) : null;
 
   return (
     <>
       {renderJustQueued()}
-      <Row>
-        <Title
-          level={4}
-          style={{
-            color: 'white',
-          }}
-        >
-          Coming Up
-        </Title>
-      </Row>
-      <PageVisibility onChange={handleVisibilityChange}>
-        <Flipper flipKey={flipKey}>
-          <List
-            size="small"
-            loadMore={loadMore}
-          >
-            {
-              sortedCleanedResults.map((request, index) =>
-                <Flipped
-                  key={request.id}
-                  flipId={request.id}
-                >
-                  <div>
-                    <QueueItem
-                      disabled={true}
-                      index={index}
-                      key={`${index}_${request.id}`}
-                      uid={uid}
-                      roomId={roomId}
-                      request={request}
-                      pageIsVisible={pageIsVisible}
-                    />
-                  </div>
-
-                </Flipped>
-              )
-            }
-          </List>
-        </Flipper>
-      </PageVisibility>
+      {renderComingUp()}
     </>
   );
 }
