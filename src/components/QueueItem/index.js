@@ -18,7 +18,12 @@ import {
   Button,
   Typography,
   Col,
+  Icon,
 } from 'antd';
+
+import {
+  Trash,
+} from 'react-feather';
 
 const QueueItem = props => {
 
@@ -56,9 +61,13 @@ const QueueItem = props => {
     }
   }
 
-  // function deleteTodo() {
-  //   return firestore.delete(`requests/${id}`)
-  // }
+  const handleDeleteRequest = async () => {
+    try {
+      await requestReference.delete();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const buttonClass = upvoted ? "upvote-button-upvoted" : "upvote-button";
 
@@ -80,22 +89,42 @@ const QueueItem = props => {
 
   const trackSpotifyUri = track.uri;
 
+  let actions = [
+    <Typography.Text style={{
+        fontWeight: '600',
+        color: 'white',
+      }}>
+      {upvotesCount}
+    </Typography.Text>,
+    <Button
+      className={buttonClass}
+      key="list-loadmore-edit"
+      icon="up"
+      onClick={toggleUpvoted}
+    />,
+  ];
+
+  if (uid === request.uid) {
+    actions.splice(0, 0,
+      (
+        <Button
+          type="link"
+          onClick={handleDeleteRequest}
+        >
+          <Icon
+            component={Trash}
+            style={{
+              fontSize: '1.5em',
+            }}
+          />
+        </Button>
+      )
+    );
+  }
+
   return (
     <List.Item
-      actions={[
-        <Typography.Text style={{
-            fontWeight: '600',
-            color: 'white',
-          }}>
-          {upvotesCount}
-        </Typography.Text>,
-        <Button
-          className={buttonClass}
-          key="list-loadmore-edit"
-          icon="up"
-          onClick={toggleUpvoted}
-        />
-      ]}
+      actions={actions}
       style={{
         // overflow: 'hidden',
         alignItems: 'stretch',
@@ -114,7 +143,6 @@ const QueueItem = props => {
           }}
         />
       </Col>
-
       <Col
         style={{
           // width: '100%',

@@ -20,13 +20,25 @@ import {
   List,
   Typography,
   Affix,
+  Button,
+  Icon,
+  Dropdown,
+  Menu,
 } from 'antd';
+
+import {
+  Share,
+  Link,
+} from 'react-feather';
+
+import Img from 'react-image';
 
 import Queue from '../Queue';
 import Search from '../Search';
 import NewRequest from '../NewRequest';
 
 // import backgroundImage from './background.jpg';
+import qrIcon from './qrIcon.svg';
 
 const { Title } = Typography;
 
@@ -34,6 +46,8 @@ const Room = props => {
 
   const {
     roomId,
+    hostActionComponents,
+    ...rest
   } = props;
 
   const roomReference = `rooms.${roomId}`;
@@ -64,12 +78,25 @@ const Room = props => {
   };
 
   // const roomExists = isLoaded(roomSelect) && !isEmpty(roomSelect);
-  const roomDoesNotExist = isLoaded(roomSelect) && isEmpty(roomSelect);
-  // const room = roomExists ? roomSelect[0] : null; // to get room data like # participants, queue length etc
+  const roomDoesNotExist = (isLoaded(roomSelect) && isEmpty(roomSelect));
+  // const room = roomExists ? roomSelect[0] : null; // to get rsoom data like # participants, queue length etc
 
   if (roomDoesNotExist) {
     return <Redirect to="/" />;
   }
+
+  const roomUrl = `disko.vip/room/${roomId.toLowerCase()}`;
+
+  const handleCopyUrlToClipboard = () => {
+    const roomUrlElement = document.createElement("input");
+    roomUrlElement.height = 0;
+    roomUrlElement.width = 0;
+    roomUrlElement.value = roomUrl;
+    document.body.appendChild(roomUrlElement);
+    roomUrlElement.select();
+    document.execCommand("copy");
+    document.body.removeChild(roomUrlElement);
+  };
 
   const {
     searchEnabled,
@@ -104,32 +131,76 @@ const Room = props => {
       }}
     >
         <Row
+          type="flex"
+          align="middle"
+          justify="space-between"
           style={{
             paddingTop: '25px',
           }}
         >
-        <Col span={12}>
-          <Title
-            level={2}
-            style={{
-              color: 'white',
-            }}
-          >
-            Disko
-          </Title>
-        </Col>
-        <Col span={12}>
-          <Title
-            level={2}
-            style={{
-              color: 'white',
-              float: 'right',
-            }}
-          >
-            {roomId}
-          </Title>
-        </Col>
+          <Col>
+            <Title
+              level={2}
+              style={{
+                color: 'white',
+              }}
+            >
+              disko
+            </Title>
+          </Col>
+          <Col>
+            <Row
+              type="flex"
+              align="middle"
+              justify="end"
+            >
+              <Col>
+                {hostActionComponents}
+              </Col>
+              <Col>
+                <Dropdown
+                  overlay={
+                    <Menu
+                      style={{
+                        backgroundColor: '#191414',
+                      }}
+                    >
+                      <Menu.Item
+                        onClick={handleCopyUrlToClipboard}
+                      >
+                        <Link
+                          color="white"
+                        />
+                      </Menu.Item>
+                      <Menu.Item>
+                        <Img src={qrIcon} />
+                      </Menu.Item>
+                    </Menu>
+                  }
+                  placement="bottomLeft"
+                >
+                  <Button
+                    type="link"
+                  >
+                    <Share
 
+                    />
+                  </Button>
+                </Dropdown>
+              </Col>
+              <Col>
+                <Title
+                  level={2}
+                  style={{
+                    color: 'white',
+                    float: 'right',
+                  }}
+                >
+                  {roomId.toLowerCase()}
+                </Title>
+              </Col>
+            </Row>
+          </Col>
         </Row>
       <Affix>
         <Row
@@ -143,6 +214,7 @@ const Room = props => {
           <NewRequest
             roomId={roomId}
             updateSearchData={updateSearchData}
+            {...rest}
           />
         </Row>
       </Affix>

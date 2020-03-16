@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   Redirect,
@@ -11,6 +14,7 @@ import {
 
 import {
   useFirebase,
+  useFirestore,
   isLoaded,
   isEmpty,
 } from 'react-redux-firebase';
@@ -19,7 +23,12 @@ import {
   Row,
   Col,
   Button,
+  Icon,
 } from 'antd';
+
+import {
+  Trash,
+} from 'react-feather';
 
 import {
   setAccessToken,
@@ -38,6 +47,8 @@ const HostRoomPage = props => {
   const firebase = useFirebase();
   const auth = useSelector(state => state.firebase.auth);
   const profile = useSelector(state => state.firebase.profile);
+
+  const [loading, setLoading] = useState(false);
   // const stateAccessToken = useSelector(state => state.spotify.accessToken);
 
   useEffect(() => {
@@ -70,12 +81,19 @@ const HostRoomPage = props => {
 
   const handleOpenNewRoom = async () => {
     try {
+      setLoading(true);
       const roomGenerationResult = await asyncGenerateNewRoom();
       console.log(roomGenerationResult);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   if (!profile.currentRoomId) {
     return (
@@ -103,7 +121,10 @@ const HostRoomPage = props => {
         type="flex"
         justify="center"
       >
-        <Room roomId={profile.currentRoomId} />
+        <Room
+          roomId={profile.currentRoomId}
+          hostActionComponents={<HostActionComponents />}
+        />
       </Row>
       <Row
         type="flex"
@@ -115,5 +136,32 @@ const HostRoomPage = props => {
   );
 
 };
+
+const HostActionComponents = props => {
+
+  const firestore = useFirestore();
+  const auth = useSelector(state => state.firebase.auth);
+  const profile = useSelector(state => state.firebase.profile);
+
+
+  const handleCloseRoom = async () => {
+    await firestore.collection('rooms').doc(profile.currentRoomId)
+      .delete();
+    await firestore.collection('hosts').doc(auth.uid)
+      .update({
+        currentRoomId: firestore.FieldValue.delete(),
+      });
+  };
+
+  return (
+    <Button
+      type="link"
+      onClick={handleCloseRoom}
+    >
+      <Trash
+      />
+    </Button>
+  );
+}
 
 export default connect()(HostRoomPage);

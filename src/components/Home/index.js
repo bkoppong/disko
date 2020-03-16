@@ -27,7 +27,7 @@ const Home = props => {
 
   const handleJoinRoom = () => {
     if (roomIdToJoin) {
-      history.push(`/room/${roomIdToJoin}`);
+      history.push(`/room/${roomIdToJoin.toLowerCase()}`);
     }
   };
 

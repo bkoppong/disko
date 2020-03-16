@@ -23,6 +23,7 @@ const OAUTH_SCOPES = [
   'streaming',
   'user-modify-playback-state',
   'user-read-email',
+  'user-read-private',
   'app-remote-control'
 ]
 

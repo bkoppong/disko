@@ -41,14 +41,14 @@ const SpotifySearchBar = ({
 
   const [inputValue, setInputValue] = useState('');
 
-  const handleEndSearch = () => {
+  const handleEndSearch = useCallback(() => {
     setInputValue('');
     updateSearchData({
       searchEnabled: false,
       searchLoading: false,
       searchResults: false,
     });
-  };
+  }, [updateSearchData]);
 
   const searchQuery = async (searchString) => {
     try {
@@ -97,10 +97,11 @@ const SpotifySearchBar = ({
     }
   };
 
-  const getHandleSelectResult = (track) => () => {
-    handleEndSearch();
-    onSelectResult(track);
-  };
+  // const getHandleSelectResult = useCallback((track) => () => {
+  //   console.log(onSelectResult)
+  //   handleEndSearch();
+  //   onSelectResult(track);
+  // }, [onSelectResult, handleEndSearch]);
 
   const handleFocus = () => {
     updateSearchData({
@@ -119,6 +120,11 @@ const SpotifySearchBar = ({
 
     return searchResults.map((track) => {
 
+      const handleSelectResult = () => {
+        handleEndSearch();
+        onSelectResult(track);
+      };
+
       const trackName = track.name;
       const primaryArtistName = track.artists[0].name;
       const albumName = track.album.name;
@@ -135,17 +141,10 @@ const SpotifySearchBar = ({
 
       const trackSpotifyUri = track.uri;
 
-      // key={track.id}
-      // value={trackSpotifyUri}
-      // track={track}
-      // style={{
-      //   padding: '0px',
-      // }}
-
       return (
           <List.Item
             key={trackSpotifyUri}
-            onClick={getHandleSelectResult(track)}
+            onClick={handleSelectResult}
             style={{
               // overflow: 'hidden',
               alignItems: 'stretch',

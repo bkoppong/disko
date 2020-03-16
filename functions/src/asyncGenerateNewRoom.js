@@ -1,5 +1,6 @@
 'use strict'
 
+const randomWords = require('random-words')
 const { admin } = require('./resources')
 
 const asyncGenerateNewRoom = async (data, context) => {
@@ -25,8 +26,8 @@ const asyncGenerateNewRoom = async (data, context) => {
     let possibleId
 
     while (true) {
-      possibleId = Math.floor(1000 + (9999 - 1000) * Math.random()).toString()
-      console.log(possibleId)
+      possibleId = randomWords({ exactly: 1, maxLength: 5 })
+      possibleId = possibleId[0].toUpperCase()
 
       const roomSnap = await roomsRef.doc(possibleId).get() // eslint-disable-line no-await-in-loop
 

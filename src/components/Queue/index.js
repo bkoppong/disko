@@ -168,48 +168,36 @@ const Queue = props => {
           </div>
         ) : null;
     return (
-      <>
-        <Row>
-          <Title
-            level={4}
-            style={{
-              color: 'white',
-            }}
+      <PageVisibility onChange={handleVisibilityChange}>
+        <Flipper flipKey={flipKey}>
+          <List
+            size="small"
+            loadMore={loadMore}
           >
-            Coming Up
-          </Title>
-        </Row>
-        <PageVisibility onChange={handleVisibilityChange}>
-          <Flipper flipKey={flipKey}>
-            <List
-              size="small"
-              loadMore={loadMore}
-            >
-              {
-                sortedCleanedResults.map((request, index) =>
-                  <Flipped
-                    key={request.id}
-                    flipId={request.id}
-                  >
-                    <div>
-                      <QueueItem
-                        disabled={true}
-                        index={index}
-                        key={`${index}_${request.id}`}
-                        uid={uid}
-                        roomId={roomId}
-                        request={request}
-                        pageIsVisible={pageIsVisible}
-                      />
-                    </div>
+            {
+              sortedCleanedResults.map((request, index) =>
+                <Flipped
+                  key={request.id}
+                  flipId={request.id}
+                >
+                  <div>
+                    <QueueItem
+                      disabled={true}
+                      index={index}
+                      key={`${index}_${request.id}`}
+                      uid={uid}
+                      roomId={roomId}
+                      request={request}
+                      pageIsVisible={pageIsVisible}
+                    />
+                  </div>
 
-                  </Flipped>
-                )
-              }
-            </List>
-          </Flipper>
-        </PageVisibility>
-      </>
+                </Flipped>
+              )
+            }
+          </List>
+        </Flipper>
+      </PageVisibility>
     );
   };
 
@@ -217,7 +205,7 @@ const Queue = props => {
     .filter(request => request.queueTimestamp)
     .sort((a, b) => {
       return b.queueTimestamp.seconds - a.queueTimestamp.seconds;
-    }).find(() => {return true});
+    }).find(() => {return true}); // TODO: only show if it was queued within the last 10 minutes
 
   const renderJustQueued = () => {
     if (!justQueued) {
@@ -326,6 +314,16 @@ const Queue = props => {
   return (
     <>
       {renderJustQueued()}
+      <Row>
+        <Title
+          level={4}
+          style={{
+            color: 'white',
+          }}
+        >
+          Coming Up
+        </Title>
+      </Row>
       {renderComingUp()}
     </>
   );

@@ -20,12 +20,15 @@ import {
 } from '../../redux/actions';
 
 import Room from '../Room';
+import LoadingPage from '../LoadingPage';
 
 const GuestRoomPage = props => {
 
-  const {
+  let {
     roomId,
   } = useParams();
+
+  roomId = roomId.toUpperCase();
 
   const firebase = useFirebase();
   const auth = useSelector(state => state.firebase.auth);
@@ -49,7 +52,6 @@ const GuestRoomPage = props => {
         asyncGetSpotifyAccessToken().then(({
           data
         }) => {
-          console.log('guest room')
           dispatch(
             setAccessToken(data)
           );
@@ -69,8 +71,15 @@ const GuestRoomPage = props => {
 
   }, [firebase, auth, dispatch]);
 
+  if (!isLoaded(auth) || isEmpty(auth)) {
+    return <LoadingPage />;
+  }
+
   return (
-    <Room roomId={roomId} />
+    <Room
+      roomId={roomId}
+      auth={auth}
+    />
   );
 
 };

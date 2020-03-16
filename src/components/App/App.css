@@ -27,6 +27,22 @@ button.ant-btn-primary:hover {
   background-color: #1DB954;
 }
 
+h2.ant-typography {
+  margin-bottom: 5px;
+}
+
+li.ant-dropdown-menu-item {
+  text-align: center;
+}
+
+li.ant-dropdown-menu-item * {
+  width: 100%;
+}
+
+li.ant-dropdown-menu-item-active {
+  background-color: #f01dbb !important;
+}
+
 .ant-btn-icon-only {
   background-color: #1DB954;
   border-color: #1DB954;
