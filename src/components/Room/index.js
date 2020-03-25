@@ -17,13 +17,12 @@ import {
 import {
   Row,
   Col,
-  List,
   Typography,
   Affix,
   Button,
-  Icon,
   Dropdown,
   Menu,
+  Tooltip,
 } from 'antd';
 
 import {
@@ -64,6 +63,15 @@ const Room = props => {
 
   const roomSelect = useSelector(state => state.firestore.ordered[roomReference]);
 
+  const [urlCopiedTooltipVisible, setUrlCopiedTooltipVisible] = useState(false);
+
+  const showUrlCopiedTooltip = () => {
+    setUrlCopiedTooltipVisible(true);
+    setTimeout(() => {
+      setUrlCopiedTooltipVisible(false);
+    }, 3000)
+  };
+
   const [searchData, setSearchData] = useState({
     searchEnabled: false,
     searchLoading: false,
@@ -96,6 +104,7 @@ const Room = props => {
     roomUrlElement.select();
     document.execCommand("copy");
     document.body.removeChild(roomUrlElement);
+    showUrlCopiedTooltip();
   };
 
   const {
@@ -111,7 +120,7 @@ const Room = props => {
         searchLoading={searchLoading}
       /> :
       <Queue
-        roomId={roomId}
+        {...props}
       />;
     return body;
   };
@@ -158,35 +167,41 @@ const Room = props => {
                 {hostActionComponents}
               </Col>
               <Col>
-                <Dropdown
-                  overlay={
-                    <Menu
-                      style={{
-                        backgroundColor: '#191414',
-                      }}
-                    >
-                      <Menu.Item
-                        onClick={handleCopyUrlToClipboard}
-                      >
-                        <Link
-                          color="white"
-                        />
-                      </Menu.Item>
-                      <Menu.Item>
-                        <Img src={qrIcon} />
-                      </Menu.Item>
-                    </Menu>
-                  }
-                  placement="bottomLeft"
+                <Tooltip
+                  placement="leftBottom"
+                  visible={urlCopiedTooltipVisible}
+                  title={<span>Room URL copied to clipboard!</span>}
                 >
-                  <Button
-                    type="link"
+                  <Dropdown
+                    overlay={
+                      <Menu
+                        style={{
+                          backgroundColor: '#191414',
+                        }}
+                      >
+                        <Menu.Item
+                          onClick={handleCopyUrlToClipboard}
+                        >
+                          <Link
+                            color="white"
+                          />
+                        </Menu.Item>
+                        <Menu.Item>
+                          <Img src={qrIcon} />
+                        </Menu.Item>
+                      </Menu>
+                    }
+                    placement="bottomLeft"
                   >
-                    <Share
+                    <Button
+                      type="link"
+                    >
+                      <Share
 
-                    />
-                  </Button>
-                </Dropdown>
+                      />
+                    </Button>
+                  </Dropdown>
+                </Tooltip>
               </Col>
               <Col>
                 <Title

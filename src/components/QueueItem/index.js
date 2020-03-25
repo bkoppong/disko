@@ -18,58 +18,22 @@ import {
   Button,
   Typography,
   Col,
-  Icon,
 } from 'antd';
 
-import {
-  Trash,
-} from 'react-feather';
 
 const QueueItem = props => {
 
   const {
-    uid,
     request,
     roomId,
     pageIsVisible,
   } = props;
 
-  const firestore = useFirestore();
+  let {
+    actions,
+  } = props;
 
-  const arrayUnion = firestore.FieldValue.arrayUnion;
-  const arrayRemove = firestore.FieldValue.arrayRemove;
-  const increment = firestore.FieldValue.increment;
-
-  const upvotes = request.upvotes ? request.upvotes : [];
-  const upvotesCount = request.upvotesCount ? request.upvotesCount : 0;
-  const upvoted = upvotes.includes(uid);
-
-  let requestReference = firestore.collection(`rooms/${roomId}/requests`).doc(request.id);
-
-  function toggleUpvoted() {
-
-    if (upvoted) {
-      requestReference.update({
-        upvotes: arrayRemove(uid),
-        upvotesCount: increment(-1),
-      });
-    } else {
-      requestReference.update({
-        upvotes: arrayUnion(uid),
-        upvotesCount: increment(1),
-      });
-    }
-  }
-
-  const handleDeleteRequest = async () => {
-    try {
-      await requestReference.delete();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const buttonClass = upvoted ? "upvote-button-upvoted" : "upvote-button";
+  actions = actions ? actions : [0];
 
   const track = request.trackData;
 
@@ -88,39 +52,6 @@ const QueueItem = props => {
   const explicitRating = track.explicit;
 
   const trackSpotifyUri = track.uri;
-
-  let actions = [
-    <Typography.Text style={{
-        fontWeight: '600',
-        color: 'white',
-      }}>
-      {upvotesCount}
-    </Typography.Text>,
-    <Button
-      className={buttonClass}
-      key="list-loadmore-edit"
-      icon="up"
-      onClick={toggleUpvoted}
-    />,
-  ];
-
-  if (uid === request.uid) {
-    actions.splice(0, 0,
-      (
-        <Button
-          type="link"
-          onClick={handleDeleteRequest}
-        >
-          <Icon
-            component={Trash}
-            style={{
-              fontSize: '1.5em',
-            }}
-          />
-        </Button>
-      )
-    );
-  }
 
   return (
     <List.Item
@@ -190,7 +121,7 @@ const TickerText = props => {
 
   const handleOverflowChange = (isOverflowed) => {
     setOverflow(isOverflowed);
-  }
+  };
 
   useEffect(() => {
 
@@ -249,27 +180,5 @@ const TickerText = props => {
   );
 
 };
-
-// TodoItem.propTypes = {
-//   id: PropTypes.string.isRequired
-// };
-
-// const SortableQueueItem = SortableElement(({
-//   key,
-//   uid,
-//   roomId,
-//   request,
-//   pageIsVisible,
-// }) => {
-//   return (
-//     <QueueItem
-//       key={key}
-//       uid={uid}
-//       roomId={roomId}
-//       request={request}
-//       pageIsVisible={pageIsVisible}
-//     />
-//   );
-// });
 
 export default QueueItem;

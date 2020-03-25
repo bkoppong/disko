@@ -68,6 +68,7 @@ const SpotifyPlayer = ({
     return await handleSpotifyAction('skipToPrevious');
   };
   const handleSkipToNext = async () => {
+    await addTopRequestToQueue();
     return await handleSpotifyAction('skipToNext');
   };
   const handlePause = async () => {
@@ -125,6 +126,11 @@ const SpotifyPlayer = ({
         requestsList.push(requestDocData);
       });
       // this is trash
+      // if something is already queued but not played, don't queue another
+      if (requestsList.find(request => request.creationTimestamp &&
+        request.queued && !request.fulfilled)) {
+          return;
+      }
       let cleanedRequests = requestsList
         .filter(request => request.creationTimestamp &&
           !request.fulfilled && !request.queued)

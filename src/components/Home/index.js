@@ -12,9 +12,16 @@ import {
   Col,
   Button,
   Input,
+  Typography,
 } from 'antd';
 
+import Img from 'react-image';
+
 import './index.css';
+
+import diskoBall from './disko_ball_gif.gif';
+
+const { Title } = Typography;
 
 const Home = props => {
 
@@ -37,7 +44,7 @@ const Home = props => {
     <Row
       type="flex"
       justify="center"
-      align="middle"
+      align="between"
       style={{
         height: '100%',
         width: '100%',
@@ -48,6 +55,32 @@ const Home = props => {
         md={12}
         lg={10}
       >
+        <Row
+          type="flex"
+          justify="center"
+          style={{
+            width: '100%',
+            marginBottom: '30px',
+            marginTop: '35px',
+          }}>
+          <Col align="middle">
+            <Img
+              src={diskoBall}
+              style={{
+                objectFit: 'cover',
+                maxWidth: '40vmin',
+                maxHeight: '40vmin',
+                height: 'auto',
+                width: 'auto',
+              }}
+              />
+            <Title style={{
+                color: 'white',
+              }}>
+              disko
+            </Title>
+          </Col>
+        </Row>
         <Row style={{
             marginBottom: '30px',
           }}>

@@ -1,19 +1,12 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   useFirestore,
-  isLoaded,
-  isEmpty,
 } from 'react-redux-firebase';
-
-import {
-  useSelector,
-} from 'react-redux';
 
 import {
   SpotifySearchBar,
 } from '../Spotify';
 
-import LoadingPage from '../LoadingPage';
 
 const NewRequest = props => {
 

@@ -23,7 +23,6 @@ import {
   Row,
   Col,
   Button,
-  Icon,
 } from 'antd';
 
 import {
@@ -98,6 +97,7 @@ const HostRoomPage = props => {
   if (!profile.currentRoomId) {
     return (
       <Row
+        type="flex"
         align="middle"
         justify="center"
         style={{
@@ -106,6 +106,8 @@ const HostRoomPage = props => {
       >
         <Col>
           <Button
+            type="primary"
+            block
             onClick={handleOpenNewRoom}
           >
             Open a Room
@@ -123,6 +125,7 @@ const HostRoomPage = props => {
       >
         <Room
           roomId={profile.currentRoomId}
+          auth={auth}
           hostActionComponents={<HostActionComponents />}
         />
       </Row>

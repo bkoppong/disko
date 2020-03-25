@@ -8,10 +8,6 @@ import {
 } from 'throttle-debounce';
 
 import {
-  isLoaded,
-} from 'react-redux-firebase';
-
-import {
   Input,
   Col,
   List,

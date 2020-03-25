@@ -46,8 +46,7 @@ async function createFirebaseAccount(
         accessToken,
         expiresIn,
         refreshTimestamp: admin.firestore.FieldValue.serverTimestamp(),
-        refreshToken,
-        currentRoomId: ''
+        refreshToken
       })
 
     let userObject = {
@@ -69,6 +68,7 @@ async function createFirebaseAccount(
         if (error.code === 'auth/user-not-found') {
           return admin.auth().createUser({
             uid: uid,
+            currentRoomId: '',
             ...userObject
           })
         }

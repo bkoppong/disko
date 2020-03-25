@@ -8,8 +8,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint .",
-    "lint:fix": "npm run lint -- --fix",
-    "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\""
+    "lint:fix": "yarn lint --fix",
+    "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\"",
+    "deploy": "yarn build && firebase deploy --only hosting",
+    "fix": "yarn lint:fix && yarn format"
   },
   "dependencies": {
     "@babel/helper-compilation-targets": "^7.8.6",
@@ -40,6 +42,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.1",
     "@testing-library/user-event": "^7.1.2",
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-config-standard": "^14.1.0",
