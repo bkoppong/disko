@@ -15,9 +15,11 @@ module.exports = {
   },
   rules: {
     semi: [
-      2, 'never'
+      'error', 'always'
     ],
-    'no-console': 'error',
+    'no-unused-vars': 'warn',
+    'no-console': 'warn',
+    'react/prop-types': 'warn',
     'react/forbid-prop-types': 0,
     'react/require-default-props': 0,
     'react/jsx-filename-extension': 0,
@@ -29,13 +31,13 @@ module.exports = {
       'error',
       {
         singleQuote: true,
-        trailingComma: 'none',
-        semi: false,
+        trailingComma: 'all',
+        semi: true,
         bracketSpacing: true,
         jsxBracketSameLine: true,
         printWidth: 80,
-        tabWidth: 2,
-        useTabs: false
+        tabWidth: 4,
+        useTabs: true
       }
     ]
   },

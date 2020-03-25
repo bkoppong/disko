@@ -1,34 +1,17 @@
 import React, { useState } from 'react';
 
-import {
-  useFirestore,
-} from 'react-redux-firebase';
+import { useFirestore } from 'react-redux-firebase';
 
-import {
-  Empty,
-  Button,
-  List,
-  Icon,
-  Typography,
-} from 'antd';
+import { Empty, Button, List, Icon, Typography } from 'antd';
 
-import {
-  Trash,
-} from 'react-feather';
+import { Trash } from 'react-feather';
 
 import { Flipper, Flipped } from 'react-flip-toolkit';
 
 import QueueItem from '../QueueItem';
 
 const ComingUpItem = props => {
-
-  const {
-    auth,
-    request,
-    index,
-    roomId,
-    ...rest
-  } = props;
+  const { auth, request, index, roomId, ...rest } = props;
 
   const uid = auth.uid;
 
@@ -42,12 +25,13 @@ const ComingUpItem = props => {
   const upvotesCount = request.upvotesCount ? request.upvotesCount : 0;
   const upvoted = upvotes.includes(uid);
 
-  const buttonClass = upvoted ? "upvote-button-upvoted" : "upvote-button";
+  const buttonClass = upvoted ? 'upvote-button-upvoted' : 'upvote-button';
 
-  let requestReference = firestore.collection(`rooms/${roomId}/requests`).doc(request.id);
+  const requestReference = firestore
+    .collection(`rooms/${roomId}/requests`)
+    .doc(request.id);
 
   function toggleUpvoted() {
-
     if (upvoted) {
       requestReference.update({
         upvotes: arrayRemove(uid),
@@ -69,11 +53,14 @@ const ComingUpItem = props => {
     }
   };
 
-  let actions = [
-    <Typography.Text style={{
+  const actions = [
+    <Typography.Text
+      key="upvotesCount"
+      style={{
         fontWeight: '600',
         color: 'white',
-      }}>
+      }}
+    >
       {upvotesCount}
     </Typography.Text>,
     <Button
@@ -85,110 +72,90 @@ const ComingUpItem = props => {
   ];
 
   if (uid === request.uid) {
-    actions.splice(0, 0,
-      (
-        <Button
-          type="link"
-          onClick={handleDeleteRequest}
-        >
-          <Icon
-            component={Trash}
-            style={{
-              fontSize: '1.5em',
-            }}
-          />
-        </Button>
-      )
+    actions.splice(
+      0,
+      0,
+      <Button key="deleteRequest" type="link" onClick={handleDeleteRequest}>
+        <Icon
+          component={Trash}
+          style={{
+            fontSize: '1.5em',
+          }}
+        />
+      </Button>,
     );
   }
 
   return (
-    <Flipped
-      key={request.id}
-      flipId={request.id}
-    >
+    <Flipped key={request.id} flipId={request.id}>
       <div>
-        <QueueItem
-          request={request}
-          actions={actions}
-          {...rest}
-        />
+        <QueueItem request={request} actions={actions} {...rest} />
       </div>
-
     </Flipped>
   );
-}
+};
 
 const ComingUp = props => {
-
-  const {
-    requests,
-    ...rest
-  } = props;
+  const { requests, ...rest } = props;
 
   const [limit, setLimit] = useState(5);
 
-  let cleanedRequests = requests
-    .filter(request => request.creationTimestamp
-      && !request.fulfilled && !request.queued);
+  const cleanedRequests = requests.filter(
+    request =>
+      request.creationTimestamp && !request.fulfilled && !request.queued,
+  );
 
-  let comingUpRequests = cleanedRequests
+  const comingUpRequests = cleanedRequests
     .sort((a, b) => {
-      let upvotesDifference = b.upvotesCount - a.upvotesCount;
+      const upvotesDifference = b.upvotesCount - a.upvotesCount;
       if (upvotesDifference) return upvotesDifference;
       return a.creationTimestamp.seconds - b.creationTimestamp.seconds;
-    }).slice(0, limit);
+    })
+    .slice(0, limit);
 
   if (!comingUpRequests.length) {
     return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />; // TODO: Make more attractive, center
   }
-  let flipKey = comingUpRequests.map(result => result.id).join('');
+  const flipKey = comingUpRequests.map(result => result.id).join('');
 
   const onLoadMore = () => {
-    setLimit(
-      limit + 5
-    );
+    setLimit(limit + 5);
   };
 
   const loadMore =
-      comingUpRequests.length > limit ? (
-        <div
+    comingUpRequests.length > limit ? (
+      <div
+        style={{
+          textAlign: 'center',
+          margin: 8,
+          height: 50,
+          lineHeight: '40px',
+        }}
+      >
+        <Button
+          type="ghost"
+          onClick={onLoadMore}
           style={{
-            textAlign: 'center',
-            margin: 8,
-            height: 50,
-            lineHeight: '40px',
+            border: 'none',
+            fontWeight: '600',
+            color: 'white',
           }}
         >
-          <Button
-            type="ghost"
-            onClick={onLoadMore}
-            style={{
-              border: 'none',
-              fontWeight: '600',
-              color: 'white',
-            }}
-          >
-            Load More
-          </Button>
-        </div>
-      ) : null;
+          Load More
+        </Button>
+      </div>
+    ) : null;
   return (
     <Flipper flipKey={flipKey}>
-      <List
-        size="small"
-        loadMore={loadMore}
-      >
-        {
-          comingUpRequests.map((request, index) =>
-            <ComingUpItem
-              key={`${index}_${request.id}`}
-              request={request}
-              index={index}
-              {...rest}
-            />
-          )
-        }
+      <List size="small" loadMore={loadMore}>
+        {comingUpRequests.map((request, index) => (
+          <ComingUpItem
+            key={`${index}_${request.id}`}
+            request={request}
+            index={index}
+            {...rest}
+          />
+        ))}
       </List>
     </Flipper>
   );

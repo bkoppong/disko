@@ -1,28 +1,17 @@
 import React from 'react';
-import {
-  useFirestore,
-} from 'react-redux-firebase';
+import { useFirestore } from 'react-redux-firebase';
 
-import {
-  SpotifySearchBar,
-} from '../Spotify';
-
+import { SpotifySearchBar } from '../Spotify';
 
 const NewRequest = props => {
-
-  const {
-    roomId,
-    auth,
-    ...rest
-  } = props;
+  const { roomId, auth, ...rest } = props;
 
   const firestore = useFirestore();
 
   // const searchDisabled = (!isLoaded(auth) || isEmpty(auth));
 
-  const handleAddRequest = async (trackData) => {
+  const handleAddRequest = async trackData => {
     try {
-
       const arrayUnion = firestore.FieldValue.arrayUnion;
       const increment = firestore.FieldValue.increment;
 
@@ -43,7 +32,7 @@ const NewRequest = props => {
 
       if (requestSnap.exists) {
         const requestData = requestSnap.data();
-        if (!(requestData.upvotes.includes(uid))) {
+        if (!requestData.upvotes.includes(uid)) {
           requestReference.update({
             upvotes: arrayUnion(uid),
             upvotesCount: increment(1),
@@ -54,7 +43,7 @@ const NewRequest = props => {
 
       const requestCreationObject = {
         trackData: trackData,
-        upvotes: [uid,],
+        upvotes: [uid],
         upvotesCount: 1,
         creationTimestamp: firestore.FieldValue.serverTimestamp(),
         uid: uid,
@@ -65,20 +54,13 @@ const NewRequest = props => {
         fulfillTimestamp: false,
       };
 
-      return await requestReference
-        .set(requestCreationObject);
-
+      return await requestReference.set(requestCreationObject);
     } catch (error) {
       console.error(error);
     }
   };
 
-  return (
-        <SpotifySearchBar
-          onSelectResult={handleAddRequest}
-          {...rest}
-        />
-  )
-}
+  return <SpotifySearchBar onSelectResult={handleAddRequest} {...rest} />;
+};
 
 export default NewRequest;

@@ -1,7 +1,4 @@
-import {
-  TOGGLE_UPVOTE,
-  SET_ACCESS_TOKEN,
-} from './actionTypes';
+import { TOGGLE_UPVOTE, SET_ACCESS_TOKEN } from './actionTypes';
 
 const toggleUpvote = content => ({
   type: TOGGLE_UPVOTE,
@@ -15,9 +12,4 @@ const setAccessToken = content => ({
   payload: content,
 });
 
-export {
-  TOGGLE_UPVOTE,
-  toggleUpvote,
-  SET_ACCESS_TOKEN,
-  setAccessToken,
-};
+export { TOGGLE_UPVOTE, toggleUpvote, SET_ACCESS_TOKEN, setAccessToken };

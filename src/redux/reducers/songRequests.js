@@ -7,7 +7,7 @@ const requestsReducer = (state = initialState, action) => {
       const { id } = action.payload;
 
       if (state.includes(id)) {
-        return state.filter((listItem) => listItem !== id);
+        return state.filter(listItem => listItem !== id);
       }
 
       state.push(id);

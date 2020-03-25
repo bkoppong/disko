@@ -1,23 +1,13 @@
 import React from 'react';
 
-import {
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-} from 'react-router-dom';
+import { Switch, Route, Link, useRouteMatch } from 'react-router-dom';
 
-import {
-  Row,
-  Col,
-  Button,
-} from 'antd';
+import { Row, Col, Button } from 'antd';
 
 import AuthenticateSpotify from './AuthenticateSpotify';
 
 const AuthenticatePage = props => {
-
-  let match = useRouteMatch();
+  const match = useRouteMatch();
 
   return (
     <Switch>
@@ -27,11 +17,8 @@ const AuthenticatePage = props => {
       <Route path={`${match.url}/applemusic`}>
         <div>apple music</div>
       </Route>
-      <Route path={'/'}>
-        <Row
-          type="flex"
-          align="middle"
-        >
+      <Route path="/">
+        <Row type="flex" align="middle">
           <Col>
             <Row>
               <Link to={`${match.url}/spotify`}>
@@ -57,7 +44,6 @@ const AuthenticatePage = props => {
                 </Button>
               </Link>
             </Row>
-
           </Col>
         </Row>
       </Route>

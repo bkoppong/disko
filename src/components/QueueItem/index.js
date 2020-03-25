@@ -1,7 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 // import PropTypes from 'prop-types'
 import { useFirestore } from 'react-redux-firebase';
 
@@ -13,27 +10,14 @@ import Img from 'react-image';
 
 import './index.css';
 
-import {
-  List,
-  Button,
-  Typography,
-  Col,
-} from 'antd';
-
+import { List, Button, Typography, Col } from 'antd';
 
 const QueueItem = props => {
+  const { request, roomId, pageIsVisible } = props;
 
-  const {
-    request,
-    roomId,
-    pageIsVisible,
-  } = props;
+  let { actions } = props;
 
-  let {
-    actions,
-  } = props;
-
-  actions = actions ? actions : [0];
+  actions = actions || [0];
 
   const track = request.trackData;
 
@@ -52,6 +36,7 @@ const QueueItem = props => {
   const explicitRating = track.explicit;
 
   const trackSpotifyUri = track.uri;
+  const trackSpotifyUrl = track.external_urls.spotify;
 
   return (
     <List.Item
@@ -61,18 +46,22 @@ const QueueItem = props => {
         alignItems: 'stretch',
       }}
     >
-      <Col style={{
+      <Col
+        style={{
           maxHeight: '100%',
-        }}>
-        <Img
-          src={albumArtworkUrl}
-          style={{
-            maxHeight: '100%',
-            maxWidth: '100%',
-            height: 'auto',
-            objectFit: 'contain',
-          }}
-        />
+        }}
+      >
+        <a href={trackSpotifyUrl} target="_blank" rel="noopener noreferrer">
+          <Img
+            src={albumArtworkUrl}
+            style={{
+              maxHeight: '100%',
+              maxWidth: '100%',
+              height: 'auto',
+              objectFit: 'contain',
+            }}
+          />
+        </a>
       </Col>
       <Col
         style={{
@@ -85,10 +74,7 @@ const QueueItem = props => {
           alignItems: 'middle',
         }}
       >
-        <TickerText
-          text={trackName}
-          pageIsVisible={pageIsVisible}
-        />
+        <TickerText text={trackName} pageIsVisible={pageIsVisible} />
         <Typography.Text
           style={{
             fontWeight: '600',
@@ -110,27 +96,23 @@ const QueueItem = props => {
 };
 
 const TickerText = props => {
-
-  const {
-    text,
-    pageIsVisible,
-  } = props;
+  const { text, pageIsVisible } = props;
 
   const [overflow, setOverflow] = useState(false);
   const [tickerMoving, setTickerMoving] = useState(false);
 
-  const handleOverflowChange = (isOverflowed) => {
+  const handleOverflowChange = isOverflowed => {
     setOverflow(isOverflowed);
   };
 
   useEffect(() => {
-
-    const tickerDelay = setTimeout(() => {setTickerMoving(overflow)}, 4000);
+    const tickerDelay = setTimeout(() => {
+      setTickerMoving(overflow);
+    }, 4000);
 
     return () => {
       clearTimeout(tickerDelay);
     };
-
   }, [overflow]);
 
   if (!pageIsVisible) {
@@ -148,37 +130,34 @@ const TickerText = props => {
         // width: '100%',
       }}
     >
-      {
-        () => (
-          <OverflowDetector
-            onOverflowChange={handleOverflowChange}
+      {() => (
+        <OverflowDetector
+          onOverflowChange={handleOverflowChange}
+          style={{
+            width: '100%',
+            height: '100%',
+            maxWidth: '100%',
+            position: 'absolute',
+          }}
+        >
+          <Typography.Text
             style={{
-              width: '100%',
-              height: '100%',
-              maxWidth: '100%',
-              position: 'absolute',
+              fontWeight: '600',
+              color: 'white',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              minWidth: '100%',
+              position: 'relative',
+              top: '-10%',
             }}
           >
-            <Typography.Text
-              style={{
-                fontWeight: '600',
-                color: 'white',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                minWidth: '100%',
-                position: 'relative',
-                top: '-10%',
-              }}
-            >
-              {text}
-            </Typography.Text>
-          </OverflowDetector>
-        )
-      }
+            {text}
+          </Typography.Text>
+        </OverflowDetector>
+      )}
     </Ticker>
   );
-
 };
 
 export default QueueItem;

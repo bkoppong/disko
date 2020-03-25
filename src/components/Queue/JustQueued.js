@@ -1,19 +1,13 @@
 import React from 'react';
 
-import {
-  Row,
-  Typography,
-} from 'antd';
+import { Row, Typography } from 'antd';
 
 import QueueItem from '../QueueItem';
 
 const { Title } = Typography;
 
 const JustQueued = props => {
-  const {
-    request,
-
-  } = props;
+  const { request } = props;
 
   if (!request) {
     return null;
@@ -31,11 +25,9 @@ const JustQueued = props => {
           Just Queued
         </Title>
       </Row>
-      <QueueItem
-        {...props}
-      />
+      <QueueItem {...props} />
     </>
   );
 };
 
-export default JustQueued
+export default JustQueued;

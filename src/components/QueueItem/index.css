@@ -17,7 +17,7 @@
   line-height: 60px;
 }
 
-.ant-list-item::before {
+.ant-list div:not(:last-child) .ant-list-item::before {
   content: "";
   position: absolute;
   width: 60%;

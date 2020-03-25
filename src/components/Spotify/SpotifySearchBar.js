@@ -1,29 +1,14 @@
-import React, {
-  useState,
-  useCallback,
-} from 'react';
+import React, { useState, useCallback } from 'react';
 
-import {
-  debounce,
-} from 'throttle-debounce';
+import { debounce } from 'throttle-debounce';
 
-import {
-  Input,
-  Col,
-  List,
-  Typography,
-} from 'antd';
+import { Input, Col, List, Typography } from 'antd';
 
-import {
-  Search,
-  X,
-} from 'react-feather';
+import { Search, X } from 'react-feather';
 
 import Img from 'react-image';
 
-import {
-  withSpotify,
-} from './spotify';
+import { withSpotify } from './spotify';
 
 const SpotifySearchBar = ({
   spotify,
@@ -34,7 +19,6 @@ const SpotifySearchBar = ({
   updateSearchData,
   ...rest
 }) => {
-
   const [inputValue, setInputValue] = useState('');
 
   const handleEndSearch = useCallback(() => {
@@ -46,7 +30,7 @@ const SpotifySearchBar = ({
     });
   }, [updateSearchData]);
 
-  const searchQuery = async (searchString) => {
+  const searchQuery = async searchString => {
     try {
       if (!searchString) {
         return updateSearchData({
@@ -55,13 +39,16 @@ const SpotifySearchBar = ({
           searchResults: [],
         });
       }
-      const newSearchResults = await handleSpotifyAction('searchTracks', searchString);
+      const newSearchResults = await handleSpotifyAction(
+        'searchTracks',
+        searchString,
+      );
 
       if (newSearchResults instanceof Error) {
         throw newSearchResults;
       }
 
-      const trackRender = renderTrackResults(newSearchResults.tracks.items)
+      const trackRender = renderTrackResults(newSearchResults.tracks.items);
       updateSearchData({
         searchEnabled: true,
         searchLoading: false,
@@ -75,7 +62,7 @@ const SpotifySearchBar = ({
 
   const debouncedSearchQuery = useCallback(debounce(350, searchQuery), []);
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     try {
       event.persist();
       if (event.target !== document.activeElement) {
@@ -105,17 +92,15 @@ const SpotifySearchBar = ({
     });
   };
 
-  const handleBlur = (event) => {
+  const handleBlur = event => {
     event.persist();
     if (!event.target.value) {
       handleEndSearch();
     }
   };
 
-  const renderTrackResults = (searchResults) => {
-
-    return searchResults.map((track) => {
-
+  const renderTrackResults = searchResults => {
+    return searchResults.map(track => {
       const handleSelectResult = () => {
         handleEndSearch();
         onSelectResult(track);
@@ -138,31 +123,32 @@ const SpotifySearchBar = ({
       const trackSpotifyUri = track.uri;
 
       return (
-          <List.Item
-            key={trackSpotifyUri}
-            onClick={handleSelectResult}
+        <List.Item
+          key={trackSpotifyUri}
+          onClick={handleSelectResult}
+          style={{
+            // overflow: 'hidden',
+            alignItems: 'stretch',
+          }}
+        >
+          <Col
             style={{
-              // overflow: 'hidden',
-              alignItems: 'stretch',
+              maxHeight: '100%',
+              display: 'flex',
             }}
           >
-            <Col
+            <Img
+              src={albumArtworkUrl}
               style={{
                 maxHeight: '100%',
-                display: 'flex',
-              }}>
-              <Img
-                src={albumArtworkUrl}
-                style={{
-                  maxHeight: '100%',
-                  maxWidth: '100%',
-                  height: 'auto',
-                  objectFit: 'contain',
-                }}
-              />
-            </Col>
-            <Col
-              style={{
+                maxWidth: '100%',
+                height: 'auto',
+                objectFit: 'contain',
+              }}
+            />
+          </Col>
+          <Col
+            style={{
               display: 'flex',
               flexGrow: '1',
               // width: '100%',
@@ -170,39 +156,40 @@ const SpotifySearchBar = ({
               // marginRight: '14px',
               overflow: 'hidden',
               alignItems: 'middle',
-            }}>
-              <Typography.Text
-                style={{
-                  fontWeight: '600',
-                  color: 'white',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  minWidth: '100%',
-                  maxWidth: '100%',
-                  position: 'relative',
-                  top: '-10%',
-                }}
-              >
-                {trackName}
-              </Typography.Text>
-              <Typography.Text
-                style={{
-                  fontWeight: '600',
-                  fontSize: '.6em',
-                  color: '#ccc',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  minWidth: '100%',
-                  position: 'absolute',
-                  bottom: '-10%',
-                }}
-              >
-                {primaryArtistName}
-              </Typography.Text>
-            </Col>
-          </List.Item>
+            }}
+          >
+            <Typography.Text
+              style={{
+                fontWeight: '600',
+                color: 'white',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                minWidth: '100%',
+                maxWidth: '100%',
+                position: 'relative',
+                top: '-10%',
+              }}
+            >
+              {trackName}
+            </Typography.Text>
+            <Typography.Text
+              style={{
+                fontWeight: '600',
+                fontSize: '.6em',
+                color: '#ccc',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                minWidth: '100%',
+                position: 'absolute',
+                bottom: '-10%',
+              }}
+            >
+              {primaryArtistName}
+            </Typography.Text>
+          </Col>
+        </List.Item>
       );
     });
   };
@@ -211,12 +198,7 @@ const SpotifySearchBar = ({
     if (!inputValue) {
       return null;
     }
-    return (
-      <X
-        size={17}
-        onClick={handleEndSearch}
-      />
-    );
+    return <X size={17} onClick={handleEndSearch} />;
   };
 
   return (
@@ -241,9 +223,7 @@ const SpotifySearchBar = ({
         width: '100%',
       }}
     />
-
   );
-
 };
 
 export default withSpotify(SpotifySearchBar);

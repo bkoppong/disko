@@ -1,10 +1,6 @@
 import React from 'react';
 
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-} from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Home from '../Home';
 import GuestRoomPage from '../GuestRoomPage';
@@ -12,7 +8,6 @@ import HostRoomPage from '../HostRoomPage';
 import AuthenticatePage from '../AuthenticatePage';
 
 const Router = props => {
-
   return (
     <BrowserRouter>
       <Switch>
@@ -31,7 +26,6 @@ const Router = props => {
       </Switch>
     </BrowserRouter>
   );
-
 };
 
 export default Router;
