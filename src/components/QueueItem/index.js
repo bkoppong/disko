@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import PropTypes from 'prop-types'
-import { useFirestore } from 'react-redux-firebase';
+// import { useFirestore } from 'react-redux-firebase';
 
 import { OverflowDetector } from 'react-overflow';
 import Ticker from 'react-ticker';
@@ -17,7 +17,7 @@ const QueueItem = props => {
 
   let { actions } = props;
 
-  actions = actions || [0];
+  actions = actions || [null];
 
   const track = request.trackData;
 
@@ -37,6 +37,8 @@ const QueueItem = props => {
 
   const trackSpotifyUri = track.uri;
   const trackSpotifyUrl = track.external_urls.spotify;
+
+  const displayName = request.displayName || 'anonymous';
 
   return (
     <List.Item
@@ -91,6 +93,24 @@ const QueueItem = props => {
           {primaryArtistName}
         </Typography.Text>
       </Col>
+      <Typography.Text
+        style={{
+          fontWeight: '600',
+          fontSize: '.6em',
+          color: '#ccc',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          position: 'absolute',
+          right: '0px',
+          bottom: '0px',
+          lineHeight: 'initial',
+          paddingRight: '15px',
+          paddingBottom: '20px',
+        }}
+      >
+        {displayName}
+      </Typography.Text>
     </List.Item>
   );
 };

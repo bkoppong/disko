@@ -5,15 +5,16 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Home from '../Home';
 import GuestRoomPage from '../GuestRoomPage';
 import HostRoomPage from '../HostRoomPage';
+import { ProtectedRoute } from '../Authorization';
 import AuthenticatePage from '../AuthenticatePage';
 
 const Router = props => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/room/:roomId">
+        <ProtectedRoute path="/room/:roomId">
           <GuestRoomPage />
-        </Route>
+        </ProtectedRoute>
         <Route path="/host">
           <HostRoomPage />
         </Route>

@@ -150,6 +150,7 @@ const Room = props => {
                     <Menu
                       style={{
                         backgroundColor: '#191414',
+                        zIndex: '10',
                       }}
                     >
                       <Menu.Item onClick={handleCopyUrlToClipboard}>

@@ -32,7 +32,7 @@ const Home = props => {
     <Row
       type="flex"
       justify="center"
-      align="between"
+      align="stretch"
       style={{
         height: '100%',
         width: '100%',
