@@ -5,19 +5,19 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Home from '../Home';
 import GuestRoomPage from '../GuestRoomPage';
 import HostRoomPage from '../HostRoomPage';
-import { ProtectedRoute } from '../Authorization';
+import { AnonymousRoute, ProtectedRoute } from '../Authorization';
 import AuthenticatePage from '../AuthenticatePage';
 
 const Router = props => {
   return (
     <BrowserRouter>
       <Switch>
-        <ProtectedRoute path="/room/:roomId">
+        <AnonymousRoute path="/room/:roomId">
           <GuestRoomPage />
-        </ProtectedRoute>
-        <Route path="/host">
+        </AnonymousRoute>
+        <ProtectedRoute path="/host">
           <HostRoomPage />
-        </Route>
+        </ProtectedRoute>
         <Route path="/authenticate">
           <AuthenticatePage />
         </Route>

@@ -2,9 +2,7 @@ import React, { useEffect, useCallback, useMemo } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 
-import {
-  useFirebase,
-} from 'react-redux-firebase';
+import { useFirebase } from 'react-redux-firebase';
 
 import Spotify from 'spotify-web-api-js';
 
@@ -12,24 +10,21 @@ import { setAccessToken } from '../../redux/actions';
 
 const spotify = new Spotify();
 
-let withSpotify = WrappedComponent => {
+const withSpotify = WrappedComponent => {
   return props => {
-
     const dispatch = useDispatch();
     const firebase = useFirebase();
     const spotifyAccessToken = useSelector(state => state.spotify.accessToken);
 
     const dispatchAccessToken = useCallback(
-      (data) => {
-        dispatch(setAccessToken(data))
+      data => {
+        dispatch(setAccessToken(data));
       },
-      [dispatch]
+      [dispatch],
     );
 
     const asyncGetSpotifyAccessToken = useMemo(() => {
-      return firebase
-        .functions()
-        .httpsCallable('asyncGetSpotifyAccessToken');
+      return firebase.functions().httpsCallable('asyncGetSpotifyAccessToken');
     }, [firebase]);
 
     const asyncRefreshSpotifyAccessToken = useMemo(() => {
@@ -75,22 +70,25 @@ let withSpotify = WrappedComponent => {
       [handleSpotifyError],
     );
 
-    const asyncHandleSpotifyAccess = useCallback(async (spotifyAccessToken) => {
-      const renewSpotifyAccessToken = async () => {
-        const { data } = await asyncGetSpotifyAccessToken();
-        await dispatchAccessToken(data);
-      };
-      // const testSpotifyAccessToken = async () => {
-      //   await handleSpotifyAction('setAccessToken', spotifyAccessToken);
-      //   await handleSpotifyAction('getMyCurrentPlaybackState');
-      // };
-      if (!spotifyAccessToken) {
-        await renewSpotifyAccessToken();
-      } else {
-        // await testSpotifyAccessToken();
-        await handleSpotifyAction('setAccessToken', spotifyAccessToken);
-      }
-    }, [asyncGetSpotifyAccessToken, dispatchAccessToken, handleSpotifyAction]);
+    const asyncHandleSpotifyAccess = useCallback(
+      async spotifyAccessToken => {
+        const renewSpotifyAccessToken = async () => {
+          const { data } = await asyncGetSpotifyAccessToken();
+          await dispatchAccessToken(data);
+        };
+        // const testSpotifyAccessToken = async () => {
+        //   await handleSpotifyAction('setAccessToken', spotifyAccessToken);
+        //   await handleSpotifyAction('getMyCurrentPlaybackState');
+        // };
+        if (!spotifyAccessToken) {
+          await renewSpotifyAccessToken();
+        } else {
+          // await testSpotifyAccessToken();
+          await handleSpotifyAction('setAccessToken', spotifyAccessToken);
+        }
+      },
+      [asyncGetSpotifyAccessToken, dispatchAccessToken, handleSpotifyAction],
+    );
 
     useEffect(() => {
       asyncHandleSpotifyAccess(spotifyAccessToken);

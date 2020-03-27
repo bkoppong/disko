@@ -1,18 +1,18 @@
-'use strict'
+'use strict';
 
 const {
-  asyncGetSpotifyAccessToken,
-  asyncRefreshSpotifyAccessToken,
-  spotifyToken,
-  spotifyRedirect
-} = require('./spotifyApi')
+	asyncGetSpotifyAccessToken,
+	asyncRefreshSpotifyAccessToken,
+	spotifyToken,
+	spotifyRedirect,
+} = require('./spotifyApi');
 
-const { asyncGenerateNewRoom } = require('./asyncGenerateNewRoom')
+const { asyncGenerateNewRoom } = require('./asyncGenerateNewRoom');
 
 module.exports = {
-  asyncGetSpotifyAccessToken,
-  asyncRefreshSpotifyAccessToken,
-  spotifyToken,
-  spotifyRedirect,
-  asyncGenerateNewRoom
-}
+	asyncGetSpotifyAccessToken,
+	asyncRefreshSpotifyAccessToken,
+	spotifyToken,
+	spotifyRedirect,
+	asyncGenerateNewRoom,
+};

@@ -1,21 +1,11 @@
 import React from 'react';
 
-import {
-  isLoaded,
-  isEmpty,
-  useFirebase,
-} from 'react-redux-firebase';
+import { isLoaded, isEmpty, useFirebase } from 'react-redux-firebase';
 
-import {
-  useSelector,
-} from 'react-redux';
-import {
-  Route,
-  // Redirect,
-} from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Route, Redirect } from 'react-router-dom';
 
 import LoadingPage from '../LoadingPage';
-
 
 // const PublicRoute = ({ children, ...rest }) => {
 //   const auth = useSelector(state => state.firebase.auth);
@@ -41,12 +31,10 @@ import LoadingPage from '../LoadingPage';
 //   );
 // };
 
-const ProtectedRoute = ({ children, ...rest }) => {
-
+const AnonymousRoute = ({ children, ...rest }) => {
   const firebase = useFirebase();
 
   const auth = useSelector(state => state.firebase.auth);
-  const profile = useSelector(state => state.firebase.profile);
 
   if (!isLoaded(auth)) {
     return <LoadingPage />;
@@ -65,13 +53,43 @@ const ProtectedRoute = ({ children, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={(props) => {
+      render={props => {
         const childrenWithProps = React.Children.map(children, child =>
-          React.cloneElement(child, { auth: auth })
+          React.cloneElement(child, { auth: auth }),
         );
         return childrenWithProps;
+      }}
+    />
+  );
+};
+
+const ProtectedRoute = ({ children, ...rest }) => {
+  const auth = useSelector(state => state.firebase.auth);
+  const profile = useSelector(state => state.firebase.profile);
+
+  if (!isLoaded(auth) || !isLoaded(profile)) {
+    return <LoadingPage />;
+  }
+
+  return (
+    <Route
+      {...rest}
+      render={({ location, ...rest }) => {
+        if (isEmpty(auth) || isEmpty(profile)) {
+          return (
+            <Redirect
+              to={{
+                pathname: '/authenticate',
+                state: { from: rest.location },
+              }}
+            />
+          );
         }
-      }
+        const childrenWithProps = React.Children.map(children, child =>
+          React.cloneElement(child, { auth: auth, profile: profile }),
+        );
+        return childrenWithProps;
+      }}
     />
   );
 };
@@ -150,6 +168,7 @@ const ProtectedRoute = ({ children, ...rest }) => {
 
 export {
   // PublicRoute,
+  AnonymousRoute,
   ProtectedRoute,
   // AdminRoute,
   // AdminComponent,

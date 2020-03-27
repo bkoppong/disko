@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { Redirect } from 'react-router-dom';
-
 import { useSelector, connect } from 'react-redux';
 
-import {
-  useFirebase,
-  useFirestore,
-  isLoaded,
-  isEmpty,
-} from 'react-redux-firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 
 import { Row, Col, Button } from 'antd';
 
@@ -46,17 +39,6 @@ const HostRoomPage = props => {
   const asyncGenerateNewRoom = firebase
     .functions()
     .httpsCallable('asyncGenerateNewRoom');
-
-  if (!isLoaded(auth) || !isLoaded(profile)) {
-    return <LoadingPage />;
-  }
-
-  if (
-    isEmpty(profile) ||
-    !(auth.uid.startsWith('spotify:') || auth.uid.startsWith('applemusic:'))
-  ) {
-    return <Redirect to="/authenticate" />;
-  }
 
   const handleOpenNewRoom = async () => {
     try {
