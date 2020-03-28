@@ -1,36 +1,33 @@
 import React, { useEffect, useCallback, useMemo } from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
 import { useFirebase } from 'react-redux-firebase';
 
 import Spotify from 'spotify-web-api-js';
 
-import { setAccessToken } from '../../redux/actions';
-
 const spotify = new Spotify();
 
 const withSpotify = WrappedComponent => {
   return props => {
-    const dispatch = useDispatch();
+    const { hostProviderInfo, guestProviderInfo } = props;
+
+    const isHostComponent = hostProviderInfo;
+
+    const providerInfo = isHostComponent ? hostProviderInfo : guestProviderInfo;
+
+    const spotifyAccessToken = providerInfo ? providerInfo.accessToken : null;
+
     const firebase = useFirebase();
-    const spotifyAccessToken = useSelector(state => state.spotify.accessToken);
 
-    const dispatchAccessToken = useCallback(
-      data => {
-        dispatch(setAccessToken(data));
-      },
-      [dispatch],
-    );
-
-    const asyncGetSpotifyAccessToken = useMemo(() => {
-      return firebase.functions().httpsCallable('asyncGetSpotifyAccessToken');
-    }, [firebase]);
-
-    const asyncRefreshSpotifyAccessToken = useMemo(() => {
+    const asyncRefreshSpotifyGuestToken = useMemo(() => {
       return firebase
         .functions()
-        .httpsCallable('asyncRefreshSpotifyAccessToken');
+        .httpsCallable('asyncRefreshSpotifyGuestToken');
+    }, [firebase]);
+
+    const asyncRefreshSpotifyHostToken = useMemo(() => {
+      return firebase.functions().httpsCallable('asyncRefreshSpotifyHostToken');
     }, [firebase]);
 
     const handleSpotifyError = useCallback(
@@ -43,16 +40,17 @@ const withSpotify = WrappedComponent => {
             errorObject.status === 401 &&
             errorObject.message === 'The access token expired'
           ) {
-            // console.log('Spotify error is due to expired access token.');
-            asyncRefreshSpotifyAccessToken();
+            const newToken = await asyncRefreshSpotifyHostToken();
+            console.log(newToken);
+            console.log('Spotify error is due to expired access token.');
           } else if (errorObject.message === 'No token provided') {
-            // console.log('Spotify error is due to lack of an access token.');
-            asyncGetSpotifyAccessToken();
+            console.log('Spotify error is due to lack of an access token.');
+            // asyncGetSpotifyAccessToken();
             // TODO: Need to handle error when refresh token is expired
           }
         }
       },
-      [asyncGetSpotifyAccessToken, asyncRefreshSpotifyAccessToken],
+      [asyncRefreshSpotifyHostToken, asyncRefreshSpotifyGuestToken],
     );
 
     const handleSpotifyAction = useCallback(
@@ -73,21 +71,30 @@ const withSpotify = WrappedComponent => {
     const asyncHandleSpotifyAccess = useCallback(
       async spotifyAccessToken => {
         const renewSpotifyAccessToken = async () => {
-          const { data } = await asyncGetSpotifyAccessToken();
-          await dispatchAccessToken(data);
+          try {
+            if (isHostComponent) {
+              await asyncRefreshSpotifyHostToken();
+              console.log('host token refreshed');
+            } else {
+              await asyncRefreshSpotifyGuestToken();
+            }
+          } catch (error) {
+            console.error(error);
+          }
         };
-        // const testSpotifyAccessToken = async () => {
-        //   await handleSpotifyAction('setAccessToken', spotifyAccessToken);
-        //   await handleSpotifyAction('getMyCurrentPlaybackState');
-        // };
         if (!spotifyAccessToken) {
+          console.log('no token');
           await renewSpotifyAccessToken();
         } else {
-          // await testSpotifyAccessToken();
           await handleSpotifyAction('setAccessToken', spotifyAccessToken);
         }
       },
-      [asyncGetSpotifyAccessToken, dispatchAccessToken, handleSpotifyAction],
+      [
+        asyncRefreshSpotifyHostToken,
+        asyncRefreshSpotifyGuestToken,
+        handleSpotifyAction,
+        isHostComponent,
+      ],
     );
 
     useEffect(() => {

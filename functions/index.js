@@ -3,19 +3,19 @@
 const functions = require('firebase-functions');
 
 const {
-	asyncGetSpotifyAccessToken,
-	asyncRefreshSpotifyAccessToken,
+	asyncRefreshSpotifyGuestToken,
+	asyncRefreshSpotifyHostToken,
 	spotifyToken,
 	spotifyRedirect,
 	asyncGenerateNewRoom,
 } = require('./src');
 
 module.exports = {
-	asyncGetSpotifyAccessToken: functions.https.onCall(
-		asyncGetSpotifyAccessToken,
+	asyncRefreshSpotifyGuestToken: functions.https.onCall(
+		asyncRefreshSpotifyGuestToken,
 	),
-	asyncRefreshSpotifyAccessToken: functions.https.onCall(
-		asyncRefreshSpotifyAccessToken,
+	asyncRefreshSpotifyHostToken: functions.https.onCall(
+		asyncRefreshSpotifyHostToken,
 	),
 	asyncGenerateNewRoom: functions.https.onCall(asyncGenerateNewRoom),
 	spotifyToken: functions.https.onRequest(spotifyToken),

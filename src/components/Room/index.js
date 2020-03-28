@@ -22,7 +22,7 @@ import { Share, Link } from 'react-feather';
 import Img from 'react-image';
 
 import Queue from '../Queue';
-import Search from '../Search';
+import SearchResults from '../SearchResults';
 import NewRequest from '../NewRequest';
 
 // import backgroundImage from './background.jpg';
@@ -43,7 +43,7 @@ const Room = props => {
 
   useFirestoreConnect([roomDataQuery]);
 
-  const roomSelect = useSelector(
+  const roomSelector = useSelector(
     state => state.firestore.ordered[roomReference],
   );
 
@@ -69,13 +69,17 @@ const Room = props => {
     setSearchData(updatedObject);
   };
 
-  // const roomExists = isLoaded(roomSelect) && !isEmpty(roomSelect);
-  const roomDoesNotExist = isLoaded(roomSelect) && isEmpty(roomSelect);
-  // const room = roomExists ? roomSelect[0] : null; // to get rsoom data like # participants, queue length etc
+  if (!isLoaded(roomSelector)) {
+    return null;
+  }
+
+  const roomDoesNotExist = isEmpty(roomSelector);
 
   if (roomDoesNotExist) {
     return <Redirect to="/" />;
   }
+
+  const room = roomSelector[0];
 
   const roomUrl = `disko.vip/room/${roomId.toLowerCase()}`;
 
@@ -95,7 +99,10 @@ const Room = props => {
 
   const renderBody = () => {
     const body = searchEnabled ? (
-      <Search searchResults={searchResults} searchLoading={searchLoading} />
+      <SearchResults
+        searchResults={searchResults}
+        searchLoading={searchLoading}
+      />
     ) : (
       <Queue {...props} />
     );
@@ -193,7 +200,7 @@ const Room = props => {
           }}
         >
           <NewRequest
-            roomId={roomId}
+            room={room}
             updateSearchData={updateSearchData}
             {...rest}
           />
@@ -223,14 +230,3 @@ const Room = props => {
 };
 
 export default Room;
-
-// <Affix offsetBottom={10}>
-//   <Title
-//     level={4}
-//     style={{
-//       color: 'white',
-//     }}
-//   >
-//     Room {roomId}
-//   </Title>
-// </Affix>

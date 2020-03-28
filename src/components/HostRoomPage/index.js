@@ -1,40 +1,50 @@
 import React, { useEffect, useState } from 'react';
 
-import { useSelector, connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { useFirebase, useFirestore } from 'react-redux-firebase';
+import {
+  useFirebase,
+  useFirestore,
+  useFirestoreConnect,
+  isEmpty,
+  isLoaded,
+} from 'react-redux-firebase';
 
 import { Row, Col, Button } from 'antd';
 
 import { Trash } from 'react-feather';
 
-import { setAccessToken } from '../../redux/actions';
-
 import Room from '../Room';
-import { SpotifyPlayer } from '../Spotify';
+import Player from '../Player';
 import LoadingPage from '../LoadingPage';
 
 const HostRoomPage = props => {
-  const { dispatch } = props;
+  const { auth, profile } = props;
 
   const firebase = useFirebase();
-  const auth = useSelector(state => state.firebase.auth);
-  const profile = useSelector(state => state.firebase.profile);
 
   const [loading, setLoading] = useState(false);
-  // const stateAccessToken = useSelector(state => state.spotify.accessToken);
 
-  useEffect(() => {
-    const data = {
-      accessToken: profile.accessToken,
-      expiresIn: 3600,
-    };
+  const hostProvidersReference = 'hostProviders';
 
-    dispatch(setAccessToken(data));
-    console.log('dispatched');
+  const firestoreHostProvidersQuery = {
+    collection: `hosts/${auth.uid}/providers`,
+    storeAs: hostProvidersReference,
+  };
 
-    return () => {};
-  }, [dispatch, profile.accessToken]);
+  useFirestoreConnect([firestoreHostProvidersQuery]);
+
+  const hostProviders = useSelector(
+    state => state.firestore.ordered[hostProvidersReference],
+  );
+
+  if (!isLoaded(hostProviders)) {
+    return <LoadingPage />;
+  }
+
+  if (isEmpty(hostProviders)) {
+    // redirect to home
+  }
 
   const asyncGenerateNewRoom = firebase
     .functions()
@@ -81,20 +91,21 @@ const HostRoomPage = props => {
         <Room
           roomId={profile.currentRoomId}
           auth={auth}
-          hostActionComponents={<HostActionComponents />}
+          hostActionComponents={<HostActionComponents {...props} />}
+          hostProviders={hostProviders}
         />
       </Row>
       <Row type="flex" justify="center">
-        <SpotifyPlayer roomId={profile.currentRoomId} />
+        <Player roomId={profile.currentRoomId} hostProviders={hostProviders} />
       </Row>
     </Col>
   );
 };
 
 const HostActionComponents = props => {
+  const { auth, profile } = props;
+
   const firestore = useFirestore();
-  const auth = useSelector(state => state.firebase.auth);
-  const profile = useSelector(state => state.firebase.profile);
 
   const handleCloseRoom = async () => {
     await firestore
@@ -116,4 +127,4 @@ const HostActionComponents = props => {
   );
 };
 
-export default connect()(HostRoomPage);
+export default HostRoomPage;

@@ -28,10 +28,7 @@ const AuthenticateSpotify = props => {
     const spotifyTokenResponseReceived = async response => {
       const jsonData = await response.json();
       if (jsonData.token) {
-        console.log('JSON TOKEN');
-        console.log(jsonData.token);
         await firebase.auth().signInWithCustomToken(jsonData.token);
-        console.log('logged in with custom token');
         history.push('/host');
       } else {
         console.log('JSON ERROR');

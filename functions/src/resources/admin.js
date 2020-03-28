@@ -32,10 +32,6 @@ async function createFirebaseAccount(
 		console.log(photoURL);
 		console.log(email);
 
-		// Save the access token to the Firestore Database.
-
-		const userByEmail = await admin.auth().getUserByEmail();
-
 		let userObject = {
 			displayName: displayName,
 			email: email,
@@ -46,37 +42,48 @@ async function createFirebaseAccount(
 			userObject.photoURL = photoURL;
 		}
 
-		let uid = userByEmail.uid;
+		// Save the access token to the Firestore Database.
 
-		// Create or update the user account.
-		const userCreationTask = admin
-			.updateUser(uid, userObject)
-			.catch(error => {
-				// If user does not exists we create it.
-				if (error.code === 'auth/user-not-found') {
-					return admin
-						.auth()
-						.createUser({
-							...userObject,
-						})
-						.then(createdUser => {
-							uid = createdUser.uid;
-							return uid;
-						});
-				}
-				throw error;
-			});
+		let userRecord;
+		let uid;
+		let authTask;
+		let profileCreationTask;
+		let providerTask;
 
-		const userProfileCreationTask = admin
+		try {
+			userRecord = await admin.auth().getUserByEmail(email);
+			uid = userRecord.uid;
+			// Update the user account.
+			authTask = admin.auth().updateUser(uid, userObject);
+		} catch (error) {
+			// If user does not exists we create it.
+			if (error.code === 'auth/user-not-found') {
+				userRecord = await admin.auth().createUser(userObject);
+				uid = userRecord.uid;
+			}
+		}
+
+		if (!uid) {
+			throw new Error('Something went wrong in creating an account.');
+		}
+
+		const hostDocRef = admin
 			.firestore()
 			.collection('hosts')
-			.doc(uid)
+			.doc(uid);
+
+		profileCreationTask = hostDocRef.set({}, { merge: true });
+
+		const providerName = providerInfo.name;
+		const providerData = providerInfo.data;
+
+		providerTask = hostDocRef
 			.collection('providers')
-			.doc(providerInfo.name)
-			.set(providerInfo.data, { merge: true });
+			.doc(providerName)
+			.set(providerData, { merge: true });
 
 		// Wait for all async tasks to complete, then generate and return a custom auth token.
-		await Promise.all([userCreationTask, userProfileCreationTask]);
+		await Promise.all([authTask, profileCreationTask, providerTask]);
 		// Create a Firebase custom auth token.
 		const token = await admin.auth().createCustomToken(uid);
 		console.log(

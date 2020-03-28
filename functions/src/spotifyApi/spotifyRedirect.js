@@ -11,6 +11,7 @@ const { Spotify, OAUTH_SCOPES } = require('../resources');
  */
 
 const spotifyRedirect = (req, res) => {
+	console.log(req.hostname);
 	cookieParser()(req, res, () => {
 		const state =
 			req.cookies.state || crypto.randomBytes(20).toString('hex');

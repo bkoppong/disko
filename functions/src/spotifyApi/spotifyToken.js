@@ -68,6 +68,7 @@ const spotifyToken = (req, res) => {
 							const providerInfo = {
 								name: 'spotify',
 								data: {
+									name: 'spotify',
 									spotifyUserID,
 									accessToken,
 									expiresIn,

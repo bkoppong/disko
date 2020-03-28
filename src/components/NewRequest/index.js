@@ -1,10 +1,12 @@
 import React from 'react';
 import { useFirestore } from 'react-redux-firebase';
 
-import { SpotifySearchBar } from '../Spotify';
+import SearchBar from '../SearchBar';
 
 const NewRequest = props => {
-  const { roomId, auth, ...rest } = props;
+  const { room, auth } = props;
+
+  const roomId = room.id;
 
   const firestore = useFirestore();
 
@@ -60,7 +62,7 @@ const NewRequest = props => {
     }
   };
 
-  return <SpotifySearchBar onSelectResult={handleAddRequest} {...rest} />;
+  return <SearchBar onSelectResult={handleAddRequest} {...props} />;
 };
 
 export default NewRequest;

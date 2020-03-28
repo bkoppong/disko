@@ -8,7 +8,7 @@ import LoadingPage from '../LoadingPage';
 
 const { Title } = Typography;
 
-const Search = props => {
+const SearchResults = props => {
   const { searchResults, searchLoading } = props;
 
   return (
@@ -43,4 +43,4 @@ const Search = props => {
   );
 };
 
-export default Search;
+export default SearchResults;

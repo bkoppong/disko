@@ -5,16 +5,13 @@ const { admin } = require('./resources');
 
 const asyncGenerateNewRoom = async (data, context) => {
 	try {
-		if (
-			!(
-				context.auth.uid.startsWith('spotify:') ||
-				context.auth.uid.startsWith('applemusic:')
-			)
-		) {
-			throw new Error('You are not authorized to create a new room!');
+		const { auth } = context;
+
+		if (!auth || !auth.uid) {
+			throw new Error('You are unauthorized to create a room!');
 		}
 
-		const { uid } = context.auth;
+		const { uid } = auth;
 
 		const hostRef = admin
 			.firestore()
@@ -36,16 +33,32 @@ const asyncGenerateNewRoom = async (data, context) => {
 			}
 		}
 
-		let hostSnap = await hostRef.get();
+		const hostDocSnapTask = hostRef.get();
+		const hostProvidersSnapTask = hostRef.collection('providers').get();
 
-		if (!hostSnap.exists) {
-			throw new Error('You are not authorized to create a new room!');
+		const taskResults = await Promise.all([
+			hostDocSnapTask,
+			hostProvidersSnapTask,
+		]);
+
+		const hostDocSnap = taskResults[0];
+		const hostProvidersSnap = taskResults[1];
+
+		if (!hostDocSnap.exists || hostProvidersSnap.empty) {
+			throw new Error('Host provider data not found.');
 		}
 
-		let hostData = hostSnap.data();
+		let hostProviders = [];
+
+		let hostDocData = hostDocSnap.data();
+		hostProvidersSnap.forEach(doc => {
+			const providerDocData = doc.data();
+			hostProviders.push(providerDocData.id);
+		});
 
 		let roomCreationTask = roomsRef.doc(possibleId).set({
 			hostUid: uid,
+			hostProviders: hostProviders,
 			guestUids: [],
 		});
 

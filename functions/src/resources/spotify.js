@@ -10,11 +10,14 @@ const { spotify } = firebaseConfig;
 const clientId = spotify.clientid;
 const clientSecret = spotify.clientsecret;
 
+const diskoRedirectUri = 'https://disko.vip/authenticate/spotify';
+const localRedirectUri = 'http://localhost:3000/authenticate/spotify';
+
 // Create the api object with the credentials
 const Spotify = new SpotifyWebApi({
 	clientId: clientId,
 	clientSecret: clientSecret,
-	redirectUri: `https://disko.vip/authenticate/spotify`,
+	redirectUri: diskoRedirectUri,
 });
 // Want to get the uri the request is coming from so redirectUri can be set accordingly
 

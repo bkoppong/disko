@@ -1,15 +1,17 @@
 'use strict';
 
-const { asyncGetSpotifyAccessToken } = require('./asyncGetSpotifyAccessToken');
 const {
-	asyncRefreshSpotifyAccessToken,
-} = require('./asyncRefreshSpotifyAccessToken');
+	asyncRefreshSpotifyGuestToken,
+} = require('./asyncRefreshSpotifyGuestToken');
+const {
+	asyncRefreshSpotifyHostToken,
+} = require('./asyncRefreshSpotifyHostToken');
 const { spotifyToken } = require('./spotifyToken');
 const { spotifyRedirect } = require('./spotifyRedirect');
 
 module.exports = {
-	asyncGetSpotifyAccessToken,
-	asyncRefreshSpotifyAccessToken,
+	asyncRefreshSpotifyGuestToken,
+	asyncRefreshSpotifyHostToken,
 	spotifyToken,
 	spotifyRedirect,
 };
