@@ -3,7 +3,9 @@ import React from 'react';
 import { SpotifySearchBar } from '../Spotify';
 
 const SearchBar = props => {
-  const { guestProviders, hostProviders } = props;
+  const { guestProviders, hostProviders, room } = props;
+
+  const allowedProviders = room.hostProviders;
 
   let guestProvidersMap = {};
   let hostProvidersMap = {};

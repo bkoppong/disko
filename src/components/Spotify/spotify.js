@@ -32,6 +32,7 @@ const withSpotify = WrappedComponent => {
 
     const handleSpotifyError = useCallback(
       async error => {
+        console.log(error);
         if (error.response) {
           const response = error.response;
           const responseObject = JSON.parse(response);
@@ -40,7 +41,12 @@ const withSpotify = WrappedComponent => {
             errorObject.status === 401 &&
             errorObject.message === 'The access token expired'
           ) {
-            const newToken = await asyncRefreshSpotifyHostToken();
+            let newToken;
+            if (isHostComponent) {
+              newToken = await asyncRefreshSpotifyHostToken();
+            } else {
+              newToken = await asyncRefreshSpotifyGuestToken();
+            }
             console.log(newToken);
             console.log('Spotify error is due to expired access token.');
           } else if (errorObject.message === 'No token provided') {
@@ -50,7 +56,11 @@ const withSpotify = WrappedComponent => {
           }
         }
       },
-      [asyncRefreshSpotifyHostToken, asyncRefreshSpotifyGuestToken],
+      [
+        asyncRefreshSpotifyHostToken,
+        asyncRefreshSpotifyGuestToken,
+        isHostComponent,
+      ],
     );
 
     const handleSpotifyAction = useCallback(
@@ -98,6 +108,12 @@ const withSpotify = WrappedComponent => {
     );
 
     useEffect(() => {
+      // console.log(spotifyAccessToken);
+      // console.log(spotify.getAccessToken());
+      // if (spotify.getAccessToken() === spotifyAccessToken) {
+      //   console.log('correct');
+      //   return;
+      // }
       asyncHandleSpotifyAccess(spotifyAccessToken);
       return () => {};
     }, [asyncHandleSpotifyAccess, spotifyAccessToken]);

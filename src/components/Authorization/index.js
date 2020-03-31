@@ -31,7 +31,7 @@ import LoadingPage from '../LoadingPage';
 //   );
 // };
 
-const AnonymousRoute = ({ children, ...rest }) => {
+const AnonymousRoute = ({ component: Component, ...rest }) => {
   const firebase = useFirebase();
 
   const auth = useSelector(state => state.firebase.auth);
@@ -54,16 +54,13 @@ const AnonymousRoute = ({ children, ...rest }) => {
     <Route
       {...rest}
       render={props => {
-        const childrenWithProps = React.Children.map(children, child =>
-          React.cloneElement(child, { auth: auth }),
-        );
-        return childrenWithProps;
+        return <Component {...props} />;
       }}
     />
   );
 };
 
-const ProtectedRoute = ({ children, ...rest }) => {
+const ProtectedRoute = ({ component: Component, ...rest }) => {
   const auth = useSelector(state => state.firebase.auth);
   const profile = useSelector(state => state.firebase.profile);
 
@@ -71,24 +68,22 @@ const ProtectedRoute = ({ children, ...rest }) => {
     return <LoadingPage />;
   }
 
+  if (isEmpty(auth) || isEmpty(profile)) {
+    return (
+      <Redirect
+        to={{
+          pathname: '/authenticate',
+          state: { from: rest.location },
+        }}
+      />
+    );
+  }
+
   return (
     <Route
       {...rest}
-      render={({ location, ...rest }) => {
-        if (isEmpty(auth) || isEmpty(profile)) {
-          return (
-            <Redirect
-              to={{
-                pathname: '/authenticate',
-                state: { from: rest.location },
-              }}
-            />
-          );
-        }
-        const childrenWithProps = React.Children.map(children, child =>
-          React.cloneElement(child, { auth: auth, profile: profile }),
-        );
-        return childrenWithProps;
+      render={props => {
+        return <Component {...props} />;
       }}
     />
   );

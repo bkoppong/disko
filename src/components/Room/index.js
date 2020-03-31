@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 
-import { useFirestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import {
+  useFirestore,
+  useFirestoreConnect,
+  isLoaded,
+  isEmpty,
+} from 'react-redux-firebase';
 
 import { Redirect } from 'react-router-dom';
 
@@ -17,21 +22,35 @@ import {
   Tooltip,
 } from 'antd';
 
-import { Share, Link } from 'react-feather';
+import { Share, Link, Users } from 'react-feather';
 
 import Img from 'react-image';
 
 import Queue from '../Queue';
 import SearchResults from '../SearchResults';
 import NewRequest from '../NewRequest';
+import Player from '../Player';
 
 // import backgroundImage from './background.jpg';
 import qrIcon from './qrIcon.svg';
+
+import './index.css';
 
 const { Title } = Typography;
 
 const Room = props => {
   const { roomId, hostActionComponents, ...rest } = props;
+
+  const { hostProviders } = rest;
+
+  const auth = useSelector(state => state.firebase.auth);
+
+  const renderPlayer = () => {
+    if (!hostProviders) {
+      return null;
+    }
+    return <Player roomId={roomId} {...rest} />;
+  };
 
   const roomReference = `rooms.${roomId}`;
 
@@ -41,10 +60,17 @@ const Room = props => {
     storeAs: roomReference,
   };
 
+  const firestore = useFirestore();
+
   useFirestoreConnect([roomDataQuery]);
 
   const roomSelector = useSelector(
     state => state.firestore.ordered[roomReference],
+  );
+
+  const guestDisplayNameReference = 'guestDisplayNames';
+  const guestDisplayNameSelector = useSelector(
+    state => state.firestore.ordered[guestDisplayNameReference],
   );
 
   const [urlCopiedTooltipVisible, setUrlCopiedTooltipVisible] = useState(false);
@@ -80,6 +106,45 @@ const Room = props => {
   }
 
   const room = roomSelector[0];
+
+  if (
+    isLoaded(guestDisplayNameSelector) &&
+    !isEmpty(guestDisplayNameSelector)
+  ) {
+    const arrayUnion = firestore.FieldValue.arrayUnion;
+    // const arrayRemove = firestore.FieldValue.arrayRemove;
+    const roomUpdateReference = firestore.collection('rooms').doc(roomId);
+    const guestDisplayName = guestDisplayNameSelector[0].displayName;
+    const roomUpdateObject = {};
+
+    if (!room.guestUids.includes(auth.uid)) {
+      roomUpdateObject.guestUids = arrayUnion(auth.uid);
+    }
+    if (
+      guestDisplayName &&
+      !room.guestDisplayNames.includes(guestDisplayName)
+    ) {
+      roomUpdateObject.guestDisplayNames = arrayUnion(guestDisplayName);
+    }
+    if (Object.keys(roomUpdateObject).length !== 0) {
+      roomUpdateReference.update(roomUpdateObject);
+    }
+  }
+
+  const guestToolTipText = (
+    <div>
+      {room.guestDisplayNames.map(displayName => (
+        <div
+          key={`${displayName}_tooltip_item`}
+          style={{
+            textAlign: 'right',
+          }}
+        >
+          {displayName}
+        </div>
+      ))}
+    </div>
+  );
 
   const roomUrl = `disko.vip/room/${roomId.toLowerCase()}`;
 
@@ -163,9 +228,11 @@ const Room = props => {
                       <Menu.Item onClick={handleCopyUrlToClipboard}>
                         <Link color="white" />
                       </Menu.Item>
-                      <Menu.Item>
-                        <Img src={qrIcon} />
-                      </Menu.Item>
+                      {
+                        // <Menu.Item>
+                        //   <Img src={qrIcon} />
+                        // </Menu.Item>
+                      }
                     </Menu>
                   }
                   placement="bottomLeft"
@@ -206,6 +273,23 @@ const Room = props => {
           />
         </Row>
       </Affix>
+      <Affix
+        style={{
+          height: '0px',
+          textAlign: 'right',
+        }}
+        offsetTop={60}
+      >
+        <Tooltip placement="bottomRight" title={guestToolTipText}>
+          <Users
+            style={{
+              color: 'white',
+              position: 'relative',
+              zIndex: '999',
+            }}
+          />
+        </Tooltip>
+      </Affix>
       {renderBody()}
 
       <Row
@@ -216,14 +300,7 @@ const Room = props => {
           paddingBottom: '80px',
         }}
       >
-        <Col
-          span={24}
-          style={
-            {
-              // marginBottom: '80px',
-            }
-          }
-        />
+        {renderPlayer()}
       </Row>
     </Col>
   );

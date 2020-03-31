@@ -9,10 +9,15 @@ const {
 
 const { asyncGenerateNewRoom } = require('./asyncGenerateNewRoom');
 
+const {
+	asyncUpdateAnonymousUsername,
+} = require('./asyncUpdateAnonymousUsername');
+
 module.exports = {
 	asyncRefreshSpotifyGuestToken,
 	asyncRefreshSpotifyHostToken,
 	spotifyToken,
 	spotifyRedirect,
 	asyncGenerateNewRoom,
+	asyncUpdateAnonymousUsername,
 };

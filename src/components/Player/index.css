@@ -1,0 +1,18 @@
+.disko-player {
+  width: 100%;
+  background: white;
+  position: absolute;
+  bottom: 0;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+.disko-player svg {
+  width: 35px;
+  height: 35px;
+  margin: 5px;
+  transition: 1s;
+}
+.disko-player svg:hover {
+  opacity: .7;
+  cursor: pointer;
+}

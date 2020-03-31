@@ -15,6 +15,8 @@ const GuestRoomPage = props => {
 
   roomId = roomId.toUpperCase();
 
+  const auth = useSelector(state => state.firebase.auth);
+
   const guestProvidersReference = 'guestProviders';
 
   const firestoreGuestProvidersQuery = {
@@ -22,7 +24,15 @@ const GuestRoomPage = props => {
     storeAs: guestProvidersReference,
   };
 
-  useFirestoreConnect([firestoreGuestProvidersQuery]);
+  const guestDisplayNameReference = 'guestDisplayNames';
+
+  const firestoreGuestNameQuery = {
+    collection: `guests`,
+    doc: auth.uid,
+    storeAs: guestDisplayNameReference,
+  };
+
+  useFirestoreConnect([firestoreGuestProvidersQuery, firestoreGuestNameQuery]);
 
   const guestProviders = useSelector(
     state => state.firestore.ordered[guestProvidersReference],

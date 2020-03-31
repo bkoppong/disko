@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import { useFirestore } from 'react-redux-firebase';
 
+import { useSelector } from 'react-redux';
+
 import { Empty, Button, List, Icon, Typography } from 'antd';
 
 import { Trash } from 'react-feather';
@@ -11,7 +13,9 @@ import { Flipper, Flipped } from 'react-flip-toolkit';
 import QueueItem from '../QueueItem';
 
 const ComingUpItem = props => {
-  const { auth, request, index, roomId, ...rest } = props;
+  const { request, index, roomId, ...rest } = props;
+
+  const auth = useSelector(state => state.firebase.auth);
 
   const uid = auth.uid;
 
@@ -114,7 +118,7 @@ const ComingUp = props => {
     .slice(0, limit);
 
   if (!comingUpRequests.length) {
-    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />; // TODO: Make more attractive, center
+    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="" />; // TODO: Make more attractive, center
   }
   const flipKey = comingUpRequests.map(result => result.id).join('');
 

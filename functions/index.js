@@ -8,6 +8,7 @@ const {
 	spotifyToken,
 	spotifyRedirect,
 	asyncGenerateNewRoom,
+	asyncUpdateAnonymousUsername,
 } = require('./src');
 
 module.exports = {
@@ -18,6 +19,9 @@ module.exports = {
 		asyncRefreshSpotifyHostToken,
 	),
 	asyncGenerateNewRoom: functions.https.onCall(asyncGenerateNewRoom),
+	asyncUpdateAnonymousUsername: functions.auth
+		.user()
+		.onCreate(asyncUpdateAnonymousUsername),
 	spotifyToken: functions.https.onRequest(spotifyToken),
 	spotifyRedirect: functions.https.onRequest(spotifyRedirect),
 };

@@ -53,13 +53,14 @@ const asyncGenerateNewRoom = async (data, context) => {
 		let hostDocData = hostDocSnap.data();
 		hostProvidersSnap.forEach(doc => {
 			const providerDocData = doc.data();
-			hostProviders.push(providerDocData.id);
+			hostProviders.push(providerDocData.name);
 		});
 
 		let roomCreationTask = roomsRef.doc(possibleId).set({
 			hostUid: uid,
 			hostProviders: hostProviders,
 			guestUids: [],
+			guestDisplayNames: [],
 		});
 
 		let hostUpdateTask = hostRef.update({

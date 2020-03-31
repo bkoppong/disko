@@ -12,12 +12,8 @@ const Router = props => {
   return (
     <BrowserRouter>
       <Switch>
-        <AnonymousRoute path="/room/:roomId">
-          <GuestRoomPage />
-        </AnonymousRoute>
-        <ProtectedRoute path="/host">
-          <HostRoomPage />
-        </ProtectedRoute>
+        <AnonymousRoute path="/room/:roomId" component={GuestRoomPage} />
+        <ProtectedRoute path="/host" component={HostRoomPage} />
         <Route path="/authenticate">
           <AuthenticatePage />
         </Route>

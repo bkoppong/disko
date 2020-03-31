@@ -1,10 +1,13 @@
 import React from 'react';
 import { useFirestore } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
 
 import SearchBar from '../SearchBar';
 
 const NewRequest = props => {
-  const { room, auth } = props;
+  const { room } = props;
+
+  const auth = useSelector(state => state.firebase.auth);
 
   const roomId = room.id;
 
@@ -22,7 +25,8 @@ const NewRequest = props => {
       }
 
       const uid = auth.uid;
-      const displayName = auth.displayName ? auth.displayName : 'anonymous';
+      const displayName = auth.displayName;
+      const isAnonymous = auth.isAnonymous;
 
       // IF THE REQUEST ALREADY EXISTS IN THE ROOM, TREAT AS UPVOTE
 
@@ -54,6 +58,7 @@ const NewRequest = props => {
         queueTimestamp: false,
         fulfilled: false,
         fulfillTimestamp: false,
+        isAnonymous: isAnonymous,
       };
 
       return await requestReference.set(requestCreationObject);

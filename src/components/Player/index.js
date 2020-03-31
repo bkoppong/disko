@@ -6,6 +6,8 @@ import SpotifyPlayer from '../Spotify/SpotifyPlayer';
 //   'spotify',
 // ];
 
+import './index.css';
+
 const Player = props => {
   const { hostProviders } = props;
 

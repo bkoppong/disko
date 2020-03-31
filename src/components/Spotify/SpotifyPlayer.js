@@ -6,6 +6,8 @@ import { Row, Col, Button } from 'antd';
 
 import fetch from 'isomorphic-unfetch';
 
+import { Play, Pause, SkipForward, SkipBack } from 'react-feather';
+
 import { withSpotify } from './spotify';
 
 const SpotifyPlayer = ({
@@ -52,9 +54,9 @@ const SpotifyPlayer = ({
         ? playbackState.item.duration_ms - playbackState.progress_ms
         : false;
     const lessThanTwentySeconds = timeRemaining && timeRemaining <= 20000;
-    setCurrentPlaybackState(playbackState);
-    setCurrentPlaybackUri(playbackUri);
-    setLessThanTwentySeconds(lessThanTwentySeconds);
+    await setCurrentPlaybackState(playbackState);
+    await setCurrentPlaybackUri(playbackUri);
+    await setLessThanTwentySeconds(lessThanTwentySeconds);
   }, [handleSpotifyAction]);
 
   const handleSkipToPrevious = async () => {
@@ -126,6 +128,7 @@ const SpotifyPlayer = ({
       });
       // this is trash
       // if something is already queued but not played, don't queue another
+      // TODO: This causes an issue because sometimes it doesn't update the request as fulfilled
       if (
         requestsList.find(
           request =>
@@ -220,20 +223,33 @@ const SpotifyPlayer = ({
   const getPauseOrPlayButton = () => {
     if (currentPlaybackState && currentPlaybackState.is_playing) {
       // if paused
-      return <Button onClick={handlePause}>Pause</Button>;
+      return <Pause onClick={handlePause} />;
     } else {
-      return <Button onClick={handlePlay}>Play</Button>;
+      return <Play onClick={handlePlay} />;
     }
   };
 
   return (
-    <Row>
-      <Col>
-        <Button onClick={handleSkipToPrevious}>Previous</Button>
+    <Row
+      type="flex"
+      align="middle"
+      justify="space-between"
+      className="disko-player"
+    >
+      <Col align="middle" span={8}>
+        <Row type="flex" align="middle" justify="center">
+          <SkipBack onClick={handleSkipToPrevious} />
+        </Row>
       </Col>
-      <Col>{getPauseOrPlayButton()}</Col>
-      <Col>
-        <Button onClick={handleSkipToNext}>Next</Button>
+      <Col align="middle" span={8}>
+        <Row type="flex" align="middle" justify="center">
+          {getPauseOrPlayButton()}
+        </Row>
+      </Col>
+      <Col align="middle" span={8}>
+        <Row type="flex" align="middle" justify="center">
+          <SkipForward onClick={handleSkipToNext} />
+        </Row>
       </Col>
     </Row>
   );

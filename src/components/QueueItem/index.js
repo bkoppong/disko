@@ -39,6 +39,9 @@ const QueueItem = props => {
   const trackSpotifyUrl = track.external_urls.spotify;
 
   const displayName = request.displayName || 'anonymous';
+  const isAnonymous = request.isAnonymous;
+
+  const displayNameColor = isAnonymous ? '#ccc' : '#1DB954';
 
   return (
     <List.Item
@@ -97,7 +100,7 @@ const QueueItem = props => {
         style={{
           fontWeight: '600',
           fontSize: '.6em',
-          color: '#ccc',
+          color: displayNameColor,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',

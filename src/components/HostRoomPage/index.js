@@ -15,11 +15,11 @@ import { Row, Col, Button } from 'antd';
 import { Trash } from 'react-feather';
 
 import Room from '../Room';
-import Player from '../Player';
 import LoadingPage from '../LoadingPage';
 
 const HostRoomPage = props => {
-  const { auth, profile } = props;
+  const auth = useSelector(state => state.firebase.auth);
+  const profile = useSelector(state => state.firebase.profile);
 
   const firebase = useFirebase();
 
@@ -86,24 +86,17 @@ const HostRoomPage = props => {
   }
 
   return (
-    <Col span={24}>
-      <Row type="flex" justify="center">
-        <Room
-          roomId={profile.currentRoomId}
-          auth={auth}
-          hostActionComponents={<HostActionComponents {...props} />}
-          hostProviders={hostProviders}
-        />
-      </Row>
-      <Row type="flex" justify="center">
-        <Player roomId={profile.currentRoomId} hostProviders={hostProviders} />
-      </Row>
-    </Col>
+    <Room
+      roomId={profile.currentRoomId}
+      hostActionComponents={<HostActionComponents />}
+      hostProviders={hostProviders}
+    />
   );
 };
 
 const HostActionComponents = props => {
-  const { auth, profile } = props;
+  const auth = useSelector(state => state.firebase.auth);
+  const profile = useSelector(state => state.firebase.profile);
 
   const firestore = useFirestore();
 
