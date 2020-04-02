@@ -1,26 +1,29 @@
-import React from 'react';
-
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-import Home from '../Home';
-import GuestRoomPage from '../GuestRoomPage';
-import HostRoomPage from '../HostRoomPage';
 import { AnonymousRoute, ProtectedRoute } from '../Authorization';
-import AuthenticatePage from '../AuthenticatePage';
+import LoadingPage from '../LoadingPage';
+
+const Home = lazy(() => import('../Home'));
+const GuestRoomPage = lazy(() => import('../GuestRoomPage'));
+const HostRoomPage = lazy(() => import('../HostRoomPage'));
+const AuthenticatePage = lazy(() => import('../AuthenticatePage'));
 
 const Router = props => {
   return (
     <BrowserRouter>
-      <Switch>
-        <AnonymousRoute path="/room/:roomId" component={GuestRoomPage} />
-        <ProtectedRoute path="/host" component={HostRoomPage} />
-        <Route path="/authenticate">
-          <AuthenticatePage />
-        </Route>
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
+      <Suspense fallback={<LoadingPage />}>
+        <Switch>
+          <AnonymousRoute path="/room/:roomId" component={GuestRoomPage} />
+          <ProtectedRoute path="/host" component={HostRoomPage} />
+          <Route path="/authenticate">
+            <AuthenticatePage />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </Suspense>
     </BrowserRouter>
   );
 };

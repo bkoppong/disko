@@ -2,11 +2,9 @@ import React, { useState, useCallback } from 'react';
 
 import { debounce } from 'throttle-debounce';
 
-import { Input, Col, List, Typography } from 'antd';
+import { Input } from 'antd';
 
 import { Search, X } from 'react-feather';
-
-import Img from 'react-image';
 
 import { withSpotify } from './spotify';
 
@@ -17,7 +15,7 @@ const SpotifySearchBar = ({
   onSelectResult,
   disabled,
   updateSearchData,
-  ...rest
+  // ...rest
 }) => {
   const [inputValue, setInputValue] = useState('');
 
@@ -36,7 +34,7 @@ const SpotifySearchBar = ({
         return updateSearchData({
           searchEnabled: true,
           searchLoading: false,
-          searchResults: [],
+          searchResults: null,
         });
       }
       const newSearchResults = await handleSpotifyAction(
@@ -48,11 +46,20 @@ const SpotifySearchBar = ({
         throw newSearchResults;
       }
 
-      const trackRender = renderTrackResults(newSearchResults.tracks.items);
+      const searchResults = newSearchResults.tracks.items.map(track => {
+        const handleSelectResult = () => {
+          handleEndSearch();
+          onSelectResult();
+        };
+        return {
+          track,
+          handleSelectResult,
+        };
+      });
       updateSearchData({
         searchEnabled: true,
         searchLoading: false,
-        searchResults: trackRender,
+        searchResults: searchResults,
       });
     } catch (error) {
       console.error(error);
@@ -99,106 +106,21 @@ const SpotifySearchBar = ({
     }
   };
 
-  const renderTrackResults = searchResults => {
-    return searchResults.map(track => {
-      const handleSelectResult = () => {
-        handleEndSearch();
-        onSelectResult(track);
-      };
-
-      const trackName = track.name;
-      const primaryArtistName = track.artists[0].name;
-      const albumName = track.album.name;
-      const albumReleaseDate = track.album.release_date;
-
-      const albumArtworkRefs = track.album.images;
-
-      const albumArtworkUrl = albumArtworkRefs.sort((a, b) => {
-        return a.height - b.height;
-      })[0].url;
-
-      const trackDuration = track.duration_ms;
-      const explicitRating = track.explicit;
-
-      const trackSpotifyUri = track.uri;
-
-      return (
-        <List.Item
-          key={trackSpotifyUri}
-          onClick={handleSelectResult}
-          style={{
-            // overflow: 'hidden',
-            alignItems: 'stretch',
-          }}
-        >
-          <Col
-            style={{
-              maxHeight: '100%',
-              display: 'flex',
-            }}
-          >
-            <Img
-              src={albumArtworkUrl}
-              style={{
-                maxHeight: '100%',
-                maxWidth: '100%',
-                height: 'auto',
-                objectFit: 'contain',
-              }}
-            />
-          </Col>
-          <Col
-            style={{
-              display: 'flex',
-              flexGrow: '1',
-              // width: '100%',
-              marginLeft: '14px',
-              // marginRight: '14px',
-              overflow: 'hidden',
-              alignItems: 'middle',
-            }}
-          >
-            <Typography.Text
-              style={{
-                fontWeight: '600',
-                color: 'white',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                minWidth: '100%',
-                maxWidth: '100%',
-                position: 'relative',
-                top: '-10%',
-              }}
-            >
-              {trackName}
-            </Typography.Text>
-            <Typography.Text
-              style={{
-                fontWeight: '600',
-                fontSize: '.6em',
-                color: '#ccc',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                minWidth: '100%',
-                position: 'absolute',
-                bottom: '-10%',
-              }}
-            >
-              {primaryArtistName}
-            </Typography.Text>
-          </Col>
-        </List.Item>
-      );
-    });
-  };
-
   const renderSuffix = () => {
     if (!inputValue) {
       return null;
     }
-    return <X size={17} onClick={handleEndSearch} />;
+    return (
+      <X
+        size={12}
+        style={{
+          transform: 'scale(1.4)',
+          // marginLeft: '-4px',
+          // marginRight: '4px',
+        }}
+        onClick={handleEndSearch}
+      />
+    );
   };
 
   return (

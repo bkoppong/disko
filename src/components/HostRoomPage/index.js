@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useSelector } from 'react-redux';
 
@@ -6,8 +6,6 @@ import {
   useFirebase,
   useFirestore,
   useFirestoreConnect,
-  isEmpty,
-  isLoaded,
 } from 'react-redux-firebase';
 
 import { Row, Col, Button } from 'antd';
@@ -17,6 +15,8 @@ import { Trash } from 'react-feather';
 import Room from '../Room';
 import LoadingPage from '../LoadingPage';
 
+import { HOST_PROVIDERS_REFERENCE } from '../../constants';
+
 const HostRoomPage = props => {
   const auth = useSelector(state => state.firebase.auth);
   const profile = useSelector(state => state.firebase.profile);
@@ -25,26 +25,20 @@ const HostRoomPage = props => {
 
   const [loading, setLoading] = useState(false);
 
-  const hostProvidersReference = 'hostProviders';
-
   const firestoreHostProvidersQuery = {
     collection: `hosts/${auth.uid}/providers`,
-    storeAs: hostProvidersReference,
+    storeAs: HOST_PROVIDERS_REFERENCE,
   };
 
   useFirestoreConnect([firestoreHostProvidersQuery]);
 
-  const hostProviders = useSelector(
-    state => state.firestore.ordered[hostProvidersReference],
-  );
+  // if (!isLoaded(hostProviders)) {
+  //   return <LoadingPage />;
+  // }
 
-  if (!isLoaded(hostProviders)) {
-    return <LoadingPage />;
-  }
-
-  if (isEmpty(hostProviders)) {
-    // redirect to home
-  }
+  // if (isEmpty(hostProviders)) {
+  //   // redirect to home? maybe use youtube
+  // }
 
   const asyncGenerateNewRoom = firebase
     .functions()
@@ -89,7 +83,6 @@ const HostRoomPage = props => {
     <Room
       roomId={profile.currentRoomId}
       hostActionComponents={<HostActionComponents />}
-      hostProviders={hostProviders}
     />
   );
 };

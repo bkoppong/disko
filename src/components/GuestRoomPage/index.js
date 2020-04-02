@@ -6,7 +6,10 @@ import { useSelector } from 'react-redux';
 
 import { useFirestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 
-import LoadingPage from '../LoadingPage';
+import {
+  GUEST_PROVIDERS_REFERENCE,
+  GUEST_DISPLAY_NAME_REFERENCE,
+} from '../../constants';
 
 import Room from '../Room';
 
@@ -17,36 +20,32 @@ const GuestRoomPage = props => {
 
   const auth = useSelector(state => state.firebase.auth);
 
-  const guestProvidersReference = 'guestProviders';
-
   const firestoreGuestProvidersQuery = {
     collection: `providers`,
-    storeAs: guestProvidersReference,
+    storeAs: GUEST_PROVIDERS_REFERENCE,
   };
-
-  const guestDisplayNameReference = 'guestDisplayNames';
 
   const firestoreGuestNameQuery = {
     collection: `guests`,
     doc: auth.uid,
-    storeAs: guestDisplayNameReference,
+    storeAs: GUEST_DISPLAY_NAME_REFERENCE,
   };
 
   useFirestoreConnect([firestoreGuestProvidersQuery, firestoreGuestNameQuery]);
 
-  const guestProviders = useSelector(
-    state => state.firestore.ordered[guestProvidersReference],
-  );
+  // const guestProviders = useSelector(
+  //   state => state.firestore.ordered[GUEST_PROVIDERS_REFERENCE],
+  // );
 
-  if (!isLoaded(guestProviders)) {
-    return <LoadingPage />;
-  }
+  // if (!isLoaded(guestProviders)) {
+  //   return <LoadingPage />;
+  // }
+  //
+  // if (isEmpty(guestProviders)) {
+  //   // this means there is no collection? not realistic
+  // }
 
-  if (isEmpty(guestProviders)) {
-    // this means there is no collection? not realistic
-  }
-
-  return <Room roomId={roomId} guestProviders={guestProviders} {...props} />;
+  return <Room roomId={roomId} {...props} />;
 };
 
 export default GuestRoomPage;

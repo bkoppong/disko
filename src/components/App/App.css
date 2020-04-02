@@ -129,6 +129,10 @@ li.ant-dropdown-menu-item-active {
   background-color: #1DB954;
 }
 
+.ant-typography {
+  margin: 0 !important;
+}
+
 /* .ant-select-dropdown-menu {
   max-height: none;
 } */

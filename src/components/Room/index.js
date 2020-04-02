@@ -24,15 +24,14 @@ import {
 
 import { Share, Link, Users } from 'react-feather';
 
-import Img from 'react-image';
+// import Img from 'react-image';
 
 import Queue from '../Queue';
-import SearchResults from '../SearchResults';
+import Search from '../Search';
 import NewRequest from '../NewRequest';
 import Player from '../Player';
 
-// import backgroundImage from './background.jpg';
-import qrIcon from './qrIcon.svg';
+// import qrIcon from '../../assets/img/qrIcon.svg';
 
 import './index.css';
 
@@ -41,12 +40,10 @@ const { Title } = Typography;
 const Room = props => {
   const { roomId, hostActionComponents, ...rest } = props;
 
-  const { hostProviders } = rest;
-
   const auth = useSelector(state => state.firebase.auth);
 
   const renderPlayer = () => {
-    if (!hostProviders) {
+    if (!hostActionComponents) {
       return null;
     }
     return <Player roomId={roomId} {...rest} />;
@@ -108,6 +105,8 @@ const Room = props => {
   const room = roomSelector[0];
 
   if (
+    isLoaded(auth) &&
+    !isEmpty(auth) &&
     isLoaded(guestDisplayNameSelector) &&
     !isEmpty(guestDisplayNameSelector)
   ) {
@@ -169,14 +168,11 @@ const Room = props => {
     showUrlCopiedTooltip();
   };
 
-  const { searchEnabled, searchLoading, searchResults } = searchData;
+  const { searchEnabled } = searchData;
 
   const renderBody = () => {
     const body = searchEnabled ? (
-      <SearchResults
-        searchResults={searchResults}
-        searchLoading={searchLoading}
-      />
+      <Search searchData={searchData} updateSearchData={updateSearchData} />
     ) : (
       <Queue {...props} />
     );
@@ -212,7 +208,7 @@ const Room = props => {
         align="middle"
         justify="space-between"
         style={{
-          paddingTop: '25px',
+          paddingTop: '5px',
         }}
       >
         <Col>
@@ -278,9 +274,9 @@ const Room = props => {
         <Row
           style={{
             zIndex: '1',
-            paddingTop: '15px',
+            paddingTop: '10px',
             paddingBottom: '15px',
-            height: '60px',
+            height: '55px',
             backgroundColor: '#191414',
           }}
         >
@@ -296,7 +292,7 @@ const Room = props => {
           height: '0px',
           textAlign: 'right',
         }}
-        offsetTop={60}
+        offsetTop={55}
       >
         <Tooltip
           trigger={['hover', 'click']}

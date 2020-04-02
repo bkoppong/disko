@@ -3,21 +3,17 @@ import React from 'react';
 // import { useFirestore } from 'react-redux-firebase';
 
 // import { SortableElement } from 'react-sortable-hoc';
-
 import Img from 'react-image';
-
-import './index.css';
 
 import { List, Typography, Col } from 'antd';
 
 import TickerText from '../TickerText';
 
-const QueueItem = props => {
-  const { request, pageIsVisible } = props;
-
-  const actions = props.actions || [null];
-
-  const track = request.trackData;
+const SearchItem = props => {
+  const {
+    track,
+    // pageIsVisible
+  } = props;
 
   const trackName = track.name;
   const primaryArtistName = track.artists[0].name;
@@ -34,17 +30,11 @@ const QueueItem = props => {
   // const explicitRating = track.explicit;
 
   // const trackSpotifyUri = track.uri;
-  const trackSpotifyUrl = track.external_urls.spotify;
+  // const trackSpotifyUrl = track.external_urls.spotify;
   // console.log(trackSpotifyUrl);
-
-  const displayName = request.displayName || 'anonymous';
-  const isAnonymous = request.isAnonymous;
-
-  const displayNameColor = isAnonymous ? '#ccc' : '#1DB954';
 
   return (
     <List.Item
-      actions={actions}
       style={{
         // overflow: 'hidden',
         alignItems: 'stretch',
@@ -55,9 +45,7 @@ const QueueItem = props => {
           maxHeight: '100%',
         }}
       >
-        <a href={trackSpotifyUrl} target="_blank" rel="noopener noreferrer">
-          <Img src={albumArtworkUrl} />
-        </a>
+        <Img src={albumArtworkUrl} />
       </Col>
       <Col
         style={{
@@ -70,7 +58,7 @@ const QueueItem = props => {
           alignItems: 'middle',
         }}
       >
-        <TickerText text={trackName} pageIsVisible={pageIsVisible} />
+        <TickerText text={trackName} pageIsVisible />
         <Typography.Text
           style={{
             fontWeight: '600',
@@ -87,25 +75,8 @@ const QueueItem = props => {
           {primaryArtistName}
         </Typography.Text>
       </Col>
-      <Typography.Text
-        style={{
-          fontWeight: '600',
-          fontSize: '.6em',
-          color: displayNameColor,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          position: 'absolute',
-          right: '0px',
-          bottom: '0px',
-          lineHeight: 'initial',
-          paddingBottom: '17px',
-        }}
-      >
-        {displayName}
-      </Typography.Text>
     </List.Item>
   );
 };
 
-export default QueueItem;
+export default SearchItem;

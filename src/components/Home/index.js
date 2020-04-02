@@ -8,7 +8,7 @@ import Img from 'react-image';
 
 import './index.css';
 
-import diskoBall from './disko_ball_gif.gif';
+import diskoBall from '../../assets/img/disko_ball_gif.gif';
 
 const { Title } = Typography;
 

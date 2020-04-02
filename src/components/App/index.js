@@ -14,7 +14,7 @@ import { firebase as fbConfig, rrfConfig } from '../../config';
 
 import { Row } from 'antd';
 
-import 'antd/dist/antd.css';
+// import 'antd/dist/antd.css';
 import './App.css';
 
 import Router from '../Router';

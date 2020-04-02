@@ -11,6 +11,7 @@ const spotify = new Spotify();
 const withSpotify = WrappedComponent => {
   return props => {
     const { hostProviderInfo, guestProviderInfo } = props;
+    // let disabled = true;
 
     const isHostComponent = hostProviderInfo;
 
@@ -93,7 +94,6 @@ const withSpotify = WrappedComponent => {
           }
         };
         if (!spotifyAccessToken) {
-          console.log('no token');
           await renewSpotifyAccessToken();
         } else {
           await handleSpotifyAction('setAccessToken', spotifyAccessToken);
@@ -119,9 +119,9 @@ const withSpotify = WrappedComponent => {
       return () => {};
     }, [asyncHandleSpotifyAccess, spotifyAccessToken]);
 
-    if (!spotifyAccessToken) {
-      return null;
-    }
+    // if (!spotifyAccessToken) {
+    //   return null;
+    // }
 
     // console.log(spotify.getAccessToken());
 

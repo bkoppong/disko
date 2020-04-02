@@ -47,7 +47,7 @@ const AnonymousRoute = ({ component: Component, ...rest }) => {
       console.error(error);
     }
 
-    return <LoadingPage />;
+    // return <LoadingPage />;
   }
 
   return (

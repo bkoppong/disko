@@ -4,19 +4,22 @@ import { useSelector } from 'react-redux';
 
 import SearchBar from '../SearchBar';
 
+import { GUEST_DISPLAY_NAME_REFERENCE } from '../../constants';
+
 const NewRequest = props => {
   const { room } = props;
   const roomId = room.id;
   const firestore = useFirestore();
 
   const auth = useSelector(state => state.firebase.auth);
-  const guestDisplayNameReference = 'guestDisplayNames';
   const guestDisplayNameSelector = useSelector(
-    state => state.firestore.ordered[guestDisplayNameReference],
+    state => state.firestore.ordered[GUEST_DISPLAY_NAME_REFERENCE],
   );
   let disabled = true;
   let displayName = auth.displayName;
+
   if (
+    !isEmpty(auth) &&
     isLoaded(guestDisplayNameSelector) &&
     !isEmpty(guestDisplayNameSelector)
   ) {

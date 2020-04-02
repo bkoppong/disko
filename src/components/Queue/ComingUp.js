@@ -76,8 +76,9 @@ const ComingUpItem = props => {
     />,
   ];
 
-  if (uid === request.uid
-    || (profile.currentRoomId && profile.currentRoomId === roomId)
+  if (
+    uid === request.uid ||
+    (profile.currentRoomId && profile.currentRoomId === roomId)
   ) {
     actions.splice(
       0,
@@ -89,7 +90,7 @@ const ComingUpItem = props => {
           fontSize: '1.5em',
           color: 'white',
         }}
-        />,
+      />,
     );
   }
 
