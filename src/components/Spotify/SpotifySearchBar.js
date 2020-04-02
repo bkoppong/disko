@@ -212,9 +212,11 @@ const SpotifySearchBar = ({
       disabled={disabled}
       prefix={
         <Search
-          size={17}
+          size={12}
           style={{
-            marginLeft: '-4px',
+            transform: 'scale(1.4)',
+            // marginLeft: '-4px',
+            marginRight: '4px',
           }}
         />
       }

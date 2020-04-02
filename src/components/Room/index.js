@@ -279,6 +279,7 @@ const Room = props => {
           style={{
             zIndex: '1',
             paddingTop: '15px',
+            paddingBottom: '15px',
             height: '60px',
             backgroundColor: '#191414',
           }}

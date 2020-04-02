@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Typography } from 'antd';
+import { Row, Typography, List } from 'antd';
 
 import QueueItem from '../QueueItem';
 
@@ -25,13 +25,9 @@ const JustQueued = props => {
           Just Queued
         </Title>
       </Row>
-      <div
-        style={{
-          transformOrigin: '0px 0px',
-        }}
-      >
+      <List size="small">
         <QueueItem {...props} />
-      </div>
+      </List>
     </>
   );
 };

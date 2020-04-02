@@ -46,6 +46,7 @@ const QueueItem = props => {
 
   return (
     <List.Item
+      size="small"
       actions={actions}
       style={{
         // overflow: 'hidden',

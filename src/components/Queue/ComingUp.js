@@ -4,7 +4,7 @@ import { useFirestore } from 'react-redux-firebase';
 
 import { useSelector } from 'react-redux';
 
-import { Empty, Button, List, Icon, Typography } from 'antd';
+import { Empty, Button, List, Typography } from 'antd';
 
 import { Trash, ChevronUp } from 'react-feather';
 
@@ -16,6 +16,7 @@ const ComingUpItem = props => {
   const { request, index, roomId, ...rest } = props;
 
   const auth = useSelector(state => state.firebase.auth);
+  const profile = useSelector(state => state.firebase.profile);
 
   const uid = auth.uid;
 
@@ -75,18 +76,20 @@ const ComingUpItem = props => {
     />,
   ];
 
-  if (uid === request.uid) {
+  if (uid === request.uid
+    || (profile.currentRoomId && profile.currentRoomId === roomId)
+  ) {
     actions.splice(
       0,
       0,
-      <Button key="deleteRequest" type="link" onClick={handleDeleteRequest}>
-        <Icon
-          component={Trash}
-          style={{
-            fontSize: '1.5em',
-          }}
-        />
-      </Button>,
+      <Trash
+        key="deleteRequest"
+        onClick={handleDeleteRequest}
+        style={{
+          fontSize: '1.5em',
+          color: 'white',
+        }}
+        />,
     );
   }
 
