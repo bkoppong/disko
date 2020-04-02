@@ -11,7 +11,8 @@ const asyncGenerateNewRoom = async (data, context) => {
 			throw new Error('You are unauthorized to create a room!');
 		}
 
-		const { uid } = auth;
+		const { uid, token } = auth;
+		const displayName = token.name || uid;
 
 		const hostRef = admin
 			.firestore()
@@ -57,6 +58,7 @@ const asyncGenerateNewRoom = async (data, context) => {
 		});
 
 		let roomCreationTask = roomsRef.doc(possibleId).set({
+			hostDisplayName: displayName,
 			hostUid: uid,
 			hostProviders: hostProviders,
 			guestUids: [],

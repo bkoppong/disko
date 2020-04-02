@@ -10,10 +10,10 @@ import Img from 'react-image';
 
 import './index.css';
 
-import { List, Button, Typography, Col } from 'antd';
+import { List, Typography, Col } from 'antd';
 
 const QueueItem = props => {
-  const { request, roomId, pageIsVisible } = props;
+  const { request, pageIsVisible } = props;
 
   let { actions } = props;
 
@@ -23,8 +23,8 @@ const QueueItem = props => {
 
   const trackName = track.name;
   const primaryArtistName = track.artists[0].name;
-  const albumName = track.album.name;
-  const albumReleaseDate = track.album.release_date;
+  // const albumName = track.album.name;
+  // const albumReleaseDate = track.album.release_date;
 
   const albumArtworkRefs = track.album.images;
 
@@ -32,11 +32,12 @@ const QueueItem = props => {
     return a.height - b.height;
   })[0].url;
 
-  const trackDuration = track.duration_ms;
-  const explicitRating = track.explicit;
+  // const trackDuration = track.duration_ms;
+  // const explicitRating = track.explicit;
 
-  const trackSpotifyUri = track.uri;
+  // const trackSpotifyUri = track.uri;
   const trackSpotifyUrl = track.external_urls.spotify;
+  // console.log(trackSpotifyUrl);
 
   const displayName = request.displayName || 'anonymous';
   const isAnonymous = request.isAnonymous;
@@ -57,15 +58,7 @@ const QueueItem = props => {
         }}
       >
         <a href={trackSpotifyUrl} target="_blank" rel="noopener noreferrer">
-          <Img
-            src={albumArtworkUrl}
-            style={{
-              maxHeight: '100%',
-              maxWidth: '100%',
-              height: 'auto',
-              objectFit: 'contain',
-            }}
-          />
+          <Img src={albumArtworkUrl} />
         </a>
       </Col>
       <Col
@@ -108,8 +101,7 @@ const QueueItem = props => {
           right: '0px',
           bottom: '0px',
           lineHeight: 'initial',
-          paddingRight: '15px',
-          paddingBottom: '20px',
+          paddingBottom: '17px',
         }}
       >
         {displayName}

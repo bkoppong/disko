@@ -14,9 +14,12 @@ const AuthenticatePage = props => {
       <Route path={`${match.url}/spotify`}>
         <AuthenticateSpotify />
       </Route>
-      <Route path={`${match.url}/applemusic`}>
-        <div>apple music</div>
-      </Route>
+      {
+        // <Route path={`${match.url}/applemusic`}>
+        //   <div>apple music</div>
+        // </Route>
+      }
+
       <Route path="/">
         <Row type="flex" align="middle">
           <Col>
@@ -32,18 +35,20 @@ const AuthenticatePage = props => {
                 </Button>
               </Link>
             </Row>
-            <Row>
-              <Link to={`${match.url}/applemusic`}>
-                <Button
-                  block
-                  style={{
-                    marginBottom: '40px',
-                  }}
-                >
-                  Login With Apple Music
-                </Button>
-              </Link>
-            </Row>
+            {
+              // <Row>
+              //   <Link to={`${match.url}/applemusic`}>
+              //     <Button
+              //       block
+              //       style={{
+              //         marginBottom: '40px',
+              //       }}
+              //     >
+              //       Login With Apple Music
+              //     </Button>
+              //   </Link>
+              // </Row>
+            }
           </Col>
         </Row>
       </Route>

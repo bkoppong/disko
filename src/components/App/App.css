@@ -74,6 +74,7 @@ li.ant-dropdown-menu-item-active {
 }
 
 .upvote-button {
+  transition: 1s;
   background: none !important;
   border: none;
   color: white;

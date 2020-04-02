@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { useFirestore } from 'react-redux-firebase';
 
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Affix } from 'antd';
 
 import fetch from 'isomorphic-unfetch';
 
@@ -230,28 +230,37 @@ const SpotifyPlayer = ({
   };
 
   return (
-    <Row
-      type="flex"
-      align="middle"
-      justify="space-between"
-      className="disko-player"
+    <Affix
+      offsetBottom={0}
+      style={{
+        position: 'absolute',
+        bottom: '0',
+        width: '100%',
+      }}
     >
-      <Col align="middle" span={8}>
-        <Row type="flex" align="middle" justify="center">
-          <SkipBack onClick={handleSkipToPrevious} />
-        </Row>
-      </Col>
-      <Col align="middle" span={8}>
-        <Row type="flex" align="middle" justify="center">
-          {getPauseOrPlayButton()}
-        </Row>
-      </Col>
-      <Col align="middle" span={8}>
-        <Row type="flex" align="middle" justify="center">
-          <SkipForward onClick={handleSkipToNext} />
-        </Row>
-      </Col>
-    </Row>
+      <Row
+        type="flex"
+        align="middle"
+        justify="space-between"
+        className="disko-player"
+      >
+        <Col align="middle" span={8}>
+          <Row type="flex" align="middle" justify="center">
+            <SkipBack onClick={handleSkipToPrevious} />
+          </Row>
+        </Col>
+        <Col align="middle" span={8}>
+          <Row type="flex" align="middle" justify="center">
+            {getPauseOrPlayButton()}
+          </Row>
+        </Col>
+        <Col align="middle" span={8}>
+          <Row type="flex" align="middle" justify="center">
+            <SkipForward onClick={handleSkipToNext} />
+          </Row>
+        </Col>
+      </Row>
+    </Affix>
   );
 };
 

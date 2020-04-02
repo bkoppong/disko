@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 import { Empty, Button, List, Icon, Typography } from 'antd';
 
-import { Trash } from 'react-feather';
+import { Trash, ChevronUp } from 'react-feather';
 
 import { Flipper, Flipped } from 'react-flip-toolkit';
 
@@ -67,10 +67,10 @@ const ComingUpItem = props => {
     >
       {upvotesCount}
     </Typography.Text>,
-    <Button
+    <ChevronUp
+      size={30}
       className={buttonClass}
       key="list-loadmore-edit"
-      icon="up"
       onClick={toggleUpvoted}
     />,
   ];
@@ -109,18 +109,18 @@ const ComingUp = props => {
       request.creationTimestamp && !request.fulfilled && !request.queued,
   );
 
-  const comingUpRequests = cleanedRequests
-    .sort((a, b) => {
-      const upvotesDifference = b.upvotesCount - a.upvotesCount;
-      if (upvotesDifference) return upvotesDifference;
-      return a.creationTimestamp.seconds - b.creationTimestamp.seconds;
-    })
-    .slice(0, limit);
+  const comingUpRequests = cleanedRequests.sort((a, b) => {
+    const upvotesDifference = b.upvotesCount - a.upvotesCount;
+    if (upvotesDifference) return upvotesDifference;
+    return a.creationTimestamp.seconds - b.creationTimestamp.seconds;
+  });
 
   if (!comingUpRequests.length) {
     return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="" />; // TODO: Make more attractive, center
   }
-  const flipKey = comingUpRequests.map(result => result.id).join('');
+
+  const limitedComingUpRequests = comingUpRequests.slice(0, limit);
+  const flipKey = limitedComingUpRequests.map(result => result.id).join('');
 
   const onLoadMore = () => {
     setLimit(limit + 5);
@@ -152,7 +152,7 @@ const ComingUp = props => {
   return (
     <Flipper flipKey={flipKey}>
       <List size="small" loadMore={loadMore}>
-        {comingUpRequests.map((request, index) => (
+        {limitedComingUpRequests.map((request, index) => (
           <ComingUpItem
             key={`${index}_${request.id}`}
             request={request}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useSelector } from 'react-redux';
 
@@ -133,6 +133,15 @@ const Room = props => {
 
   const guestToolTipText = (
     <div>
+      <div
+        key="host_tooltip_item"
+        style={{
+          textAlign: 'right',
+          color: '#f01dbb',
+        }}
+      >
+        {room.hostDisplayName}
+      </div>
       {room.guestDisplayNames.map(displayName => (
         <div
           key={`${displayName}_tooltip_item`}
@@ -171,7 +180,15 @@ const Room = props => {
     ) : (
       <Queue {...props} />
     );
-    return body;
+    return (
+      <Col
+        style={{
+          paddingBottom: '80px',
+        }}
+      >
+        {body}
+      </Col>
+    );
   };
 
   return (
@@ -280,7 +297,11 @@ const Room = props => {
         }}
         offsetTop={60}
       >
-        <Tooltip placement="bottomRight" title={guestToolTipText}>
+        <Tooltip
+          trigger={['hover', 'click']}
+          placement="bottomRight"
+          title={guestToolTipText}
+        >
           <Users
             style={{
               color: 'white',
@@ -291,17 +312,7 @@ const Room = props => {
         </Tooltip>
       </Affix>
       {renderBody()}
-
-      <Row
-        type="flex"
-        justify="center"
-        style={{
-          paddingTop: '10px',
-          paddingBottom: '80px',
-        }}
-      >
-        {renderPlayer()}
-      </Row>
+      {renderPlayer()}
     </Col>
   );
 };

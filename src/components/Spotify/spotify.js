@@ -97,6 +97,7 @@ const withSpotify = WrappedComponent => {
           await renewSpotifyAccessToken();
         } else {
           await handleSpotifyAction('setAccessToken', spotifyAccessToken);
+          await handleSpotifyAction('searchTracks', 'test');
         }
       },
       [

@@ -25,7 +25,13 @@ const JustQueued = props => {
           Just Queued
         </Title>
       </Row>
-      <QueueItem {...props} />
+      <div
+        style={{
+          transformOrigin: '0px 0px',
+        }}
+      >
+        <QueueItem {...props} />
+      </div>
     </>
   );
 };

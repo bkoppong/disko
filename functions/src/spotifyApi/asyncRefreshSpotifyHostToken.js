@@ -65,11 +65,18 @@ const asyncRefreshSpotifyHostToken = async (data, context) => {
 		}
 
 		const renewedAccessToken = data.body['access_token'];
+		const renewedRefreshToken = data.body['refresh_token'];
 
-		await spotifyProviderRef.update({
+		let spotifyProviderUpdateObject = {
 			accessToken: renewedAccessToken,
 			refreshTimestamp: admin.firestore.FieldValue.serverTimestamp(),
-		});
+		};
+
+		if (renewedRefreshToken) {
+			spotifyProviderUpdateObject.refreshToken = renewedRefreshToken;
+		}
+
+		await spotifyProviderRef.update(spotifyProviderUpdateObject);
 
 		return {
 			accessToken: renewedAccessToken,
