@@ -15,9 +15,17 @@
   border: none !important;
   position: relative;
   line-height: 60px;
+  height: 76px;
 }
 
-.ant-list-item::before {
+.ant-list-item a, .ant-list-item img, .ant-list-item a img {
+  max-height: 60px;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.ant-list div:not(:last-child) .ant-list-item::before {
   content: "";
   position: absolute;
   width: 60%;
@@ -26,4 +34,13 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.ant-list-item-action {
+  display: flex;
+  align-items: center;
+}
+
+.ant-list-item-action li:last-child {
+  padding-right: 0px;
 }

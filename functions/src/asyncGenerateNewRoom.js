@@ -1,70 +1,87 @@
-'use strict'
+'use strict';
 
-const { admin } = require('./resources')
+const randomWords = require('random-words');
+const { admin } = require('./resources');
 
 const asyncGenerateNewRoom = async (data, context) => {
-  try {
-    if (
-      !(
-        context.auth.uid.startsWith('spotify:') ||
-        context.auth.uid.startsWith('applemusic:')
-      )
-    ) {
-      throw new Error('You are not authorized to create a new room!')
-    }
+	try {
+		const { auth } = context;
 
-    const { uid } = context.auth
+		if (!auth || !auth.uid) {
+			throw new Error('You are unauthorized to create a room!');
+		}
 
-    const hostRef = admin
-      .firestore()
-      .collection('hosts')
-      .doc(uid)
+		const { uid, token } = auth;
+		const displayName = token.name || uid;
 
-    const roomsRef = admin.firestore().collection('rooms')
+		const hostRef = admin
+			.firestore()
+			.collection('hosts')
+			.doc(uid);
 
-    let possibleId
+		const roomsRef = admin.firestore().collection('rooms');
 
-    while (true) {
-      possibleId = Math.floor(1000 + (9999 - 1000) * Math.random()).toString()
-      console.log(possibleId)
+		let possibleId;
 
-      const roomSnap = await roomsRef.doc(possibleId).get() // eslint-disable-line no-await-in-loop
+		while (true) {
+			possibleId = randomWords({ exactly: 1, maxLength: 5 });
+			possibleId = possibleId[0].toUpperCase();
 
-      if (!roomSnap.exists) {
-        break
-      }
-    }
+			const roomSnap = await roomsRef.doc(possibleId).get(); // eslint-disable-line no-await-in-loop
 
-    let hostSnap = await hostRef.get()
+			if (!roomSnap.exists) {
+				break;
+			}
+		}
 
-    if (!hostSnap.exists) {
-      throw new Error('You are not authorized to create a new room!')
-    }
+		const hostDocSnapTask = hostRef.get();
+		const hostProvidersSnapTask = hostRef.collection('providers').get();
 
-    let hostData = hostSnap.data()
+		const taskResults = await Promise.all([
+			hostDocSnapTask,
+			hostProvidersSnapTask,
+		]);
 
-    let roomCreationTask = roomsRef.doc(possibleId).set({
-      hostUid: uid,
-      guestUids: []
-    })
+		const hostDocSnap = taskResults[0];
+		const hostProvidersSnap = taskResults[1];
 
-    let hostUpdateTask = hostRef.update({
-      currentRoomId: possibleId
-    })
+		if (!hostDocSnap.exists || hostProvidersSnap.empty) {
+			throw new Error('Host provider data not found.');
+		}
 
-    await Promise.all([roomCreationTask, hostUpdateTask])
+		let hostProviders = [];
 
-    return {
-      message: 'Successful room creation'
-    }
-  } catch (error) {
-    console.error(error)
-    return {
-      error
-    }
-  }
-}
+		let hostDocData = hostDocSnap.data();
+		hostProvidersSnap.forEach(doc => {
+			const providerDocData = doc.data();
+			hostProviders.push(providerDocData.name);
+		});
+
+		let roomCreationTask = roomsRef.doc(possibleId).set({
+			hostDisplayName: displayName,
+			hostUid: uid,
+			hostProviders: hostProviders,
+			guestUids: [],
+			guestDisplayNames: [],
+		});
+
+		let hostUpdateTask = hostRef.update({
+			currentRoomId: possibleId,
+		});
+
+		await Promise.all([roomCreationTask, hostUpdateTask]);
+
+		return {
+			message: 'Successful room creation',
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			error,
+		};
+	}
+};
 
 module.exports = {
-  asyncGenerateNewRoom
-}
+	asyncGenerateNewRoom,
+};

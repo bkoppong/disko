@@ -1,23 +1,23 @@
-import {
-  TOGGLE_UPVOTE,
-  SET_ACCESS_TOKEN,
-} from './actionTypes';
+import { UPDATE_SEARCH_DATA, START_SEARCH, END_SEARCH } from './actionTypes';
 
-const toggleUpvote = content => ({
-  type: TOGGLE_UPVOTE,
-  payload: {
-    content,
-  },
-});
-
-const setAccessToken = content => ({
-  type: SET_ACCESS_TOKEN,
+const updateSearchData = content => ({
+  type: UPDATE_SEARCH_DATA,
   payload: content,
 });
 
+const startSearch = content => ({
+  type: START_SEARCH,
+});
+
+const endSearch = content => ({
+  type: END_SEARCH,
+});
+
 export {
-  TOGGLE_UPVOTE,
-  toggleUpvote,
-  SET_ACCESS_TOKEN,
-  setAccessToken,
+  UPDATE_SEARCH_DATA,
+  updateSearchData,
+  START_SEARCH,
+  startSearch,
+  END_SEARCH,
+  endSearch,
 };

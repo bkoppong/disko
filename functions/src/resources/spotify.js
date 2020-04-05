@@ -1,35 +1,39 @@
-'use strict'
+'use strict';
 
-const functions = require('firebase-functions')
-const SpotifyWebApi = require('spotify-web-api-node')
+const functions = require('firebase-functions');
+const SpotifyWebApi = require('spotify-web-api-node');
 
-const firebaseConfig = functions.config()
+const firebaseConfig = functions.config();
 
-const { spotify } = firebaseConfig
+const { spotify } = firebaseConfig;
 
-const clientId = spotify.clientid
-const clientSecret = spotify.clientsecret
+const clientId = spotify.clientid;
+const clientSecret = spotify.clientsecret;
+
+const diskoRedirectUri = 'https://disko.vip/authenticate/spotify';
+const localRedirectUri = 'http://localhost:3000/authenticate/spotify';
 
 // Create the api object with the credentials
 const Spotify = new SpotifyWebApi({
-  clientId: clientId,
-  clientSecret: clientSecret,
-  redirectUri: `https://disko.vip/authenticate/spotify`
-})
+	clientId: clientId,
+	clientSecret: clientSecret,
+	redirectUri: diskoRedirectUri,
+});
 // Want to get the uri the request is coming from so redirectUri can be set accordingly
 
 const OAUTH_SCOPES = [
-  'user-read-playback-state',
-  'streaming',
-  'user-modify-playback-state',
-  'user-read-email',
-  'app-remote-control'
-]
+	'user-read-playback-state',
+	'streaming',
+	'user-modify-playback-state',
+	'user-read-email',
+	'user-read-private',
+	'app-remote-control',
+];
 
 module.exports = {
-  Spotify,
-  OAUTH_SCOPES
-}
+	Spotify,
+	OAUTH_SCOPES,
+};
 
 // // Retrieve an access token.
 // Spotify.clientCredentialsGrant().then(

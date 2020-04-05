@@ -27,6 +27,22 @@ button.ant-btn-primary:hover {
   background-color: #1DB954;
 }
 
+h2.ant-typography {
+  margin-bottom: 5px;
+}
+
+li.ant-dropdown-menu-item {
+  text-align: center;
+}
+
+li.ant-dropdown-menu-item * {
+  width: 100%;
+}
+
+li.ant-dropdown-menu-item-active {
+  background-color: #f01dbb !important;
+}
+
 .ant-btn-icon-only {
   background-color: #1DB954;
   border-color: #1DB954;
@@ -58,6 +74,7 @@ button.ant-btn-primary:hover {
 }
 
 .upvote-button {
+  transition: 1s;
   background: none !important;
   border: none;
   color: white;
@@ -110,6 +127,10 @@ button.ant-btn-primary:hover {
 
 .ant-select-dropdown {
   background-color: #1DB954;
+}
+
+.ant-typography {
+  margin: 0 !important;
 }
 
 /* .ant-select-dropdown-menu {

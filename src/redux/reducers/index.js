@@ -1,13 +1,13 @@
-import { combineReducers } from 'redux'
-import { firebaseReducer } from 'react-redux-firebase'
-import { firestoreReducer } from 'redux-firestore'
+import { combineReducers } from 'redux';
+import { firebaseReducer } from 'react-redux-firebase';
+import { firestoreReducer } from 'redux-firestore';
 
-import spotifyReducer from './spotify'
+import searchReducer from './search';
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
   firestore: firestoreReducer,
-  spotify: spotifyReducer,
-})
+  search: searchReducer,
+});
 
-export default rootReducer
+export default rootReducer;

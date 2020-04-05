@@ -1,78 +1,51 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+
+import { useParams } from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
+
+import { useFirestoreConnect } from 'react-redux-firebase';
 
 import {
-  connect,
-  useSelector,
-} from 'react-redux';
-
-import {
-  useFirebase,
-  isLoaded,
-  isEmpty,
-} from 'react-redux-firebase';
-
-import {
-  useParams,
-} from 'react-router-dom';
-
-import {
-  setAccessToken,
-} from '../../redux/actions';
+  GUEST_PROVIDERS_REFERENCE,
+  GUEST_DISPLAY_NAME_REFERENCE,
+} from '../../constants';
 
 import Room from '../Room';
 
 const GuestRoomPage = props => {
+  let { roomId } = useParams();
 
-  const {
-    roomId,
-  } = useParams();
+  roomId = roomId.toUpperCase();
 
-  const firebase = useFirebase();
   const auth = useSelector(state => state.firebase.auth);
 
-  const {
-    dispatch,
-  } = props;
+  const firestoreGuestProvidersQuery = {
+    collection: `providers`,
+    storeAs: GUEST_PROVIDERS_REFERENCE,
+  };
 
-  useEffect(() => {
-    try {
+  const firestoreGuestNameQuery = {
+    collection: `guests`,
+    doc: auth.uid,
+    storeAs: GUEST_DISPLAY_NAME_REFERENCE,
+  };
 
+  useFirestoreConnect([firestoreGuestProvidersQuery, firestoreGuestNameQuery]);
 
-      const asyncGetSpotifyAccessToken = firebase.functions().httpsCallable('asyncGetSpotifyAccessToken');
+  // const guestProviders = useSelector(
+  //   state => state.firestore.ordered[GUEST_PROVIDERS_REFERENCE],
+  // );
 
-      const signInAndGetAccessToken = async () => {
+  // if (!isLoaded(guestProviders)) {
+  //   return <LoadingPage />;
+  // }
+  //
+  // if (isEmpty(guestProviders)) {
+  //   // this means there is no collection? not realistic
+  // }
 
-        if (isLoaded(auth) && isEmpty(auth)) {
-          await firebase.auth().signInAnonymously();
-        }
-
-        asyncGetSpotifyAccessToken().then(({
-          data
-        }) => {
-          console.log('guest room')
-          dispatch(
-            setAccessToken(data)
-          );
-        });
-
-      };
-
-      signInAndGetAccessToken();
-
-    } catch (error) {
-      console.error(error);
-    }
-
-    return () => {
-
-    };
-
-  }, [firebase, auth, dispatch]);
-
-  return (
-    <Room roomId={roomId} />
-  );
-
+  return <Room roomId={roomId} {...props} />;
 };
 
-export default connect()(GuestRoomPage);
+export default GuestRoomPage;
