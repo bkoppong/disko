@@ -12,6 +12,7 @@ import TickerText from '../TickerText';
 const SearchItem = props => {
   const {
     track,
+    handleSelectResult,
     // pageIsVisible
   } = props;
 
@@ -35,6 +36,7 @@ const SearchItem = props => {
 
   return (
     <List.Item
+      onClick={handleSelectResult}
       style={{
         // overflow: 'hidden',
         alignItems: 'stretch',

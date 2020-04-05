@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect, isLoaded } from 'react-redux-firebase';
 
-import { Row, Typography } from 'antd';
+import { Row, Col, Typography } from 'antd';
 
 import PageVisibility from 'react-page-visibility';
 
@@ -19,7 +19,7 @@ const { Title } = Typography;
 const Queue = props => {
   const { roomId } = props;
 
-  const requestsReference = `rooms/${roomId}/requests`;
+  const requestsReference = `rooms.${roomId}.requests`;
 
   const requestsQuery = {
     collection: `rooms/${roomId}/requests`,
@@ -58,30 +58,46 @@ const Queue = props => {
     }); // TODO: only show if it was queued within the last 10 minutes
 
   return (
-    <PageVisibility onChange={handleVisibilityChange}>
-      <>
-        <JustQueued
-          request={justQueuedRequest}
-          pageIsVisible={pageIsVisible}
-          {...props}
-        />
-        <Row>
-          <Title
-            level={4}
-            style={{
-              color: 'white',
-            }}
-          >
-            Coming Up
-          </Title>
-        </Row>
-        <ComingUp
-          requests={requests}
-          pageIsVisible={pageIsVisible}
-          {...props}
-        />
-      </>
-    </PageVisibility>
+    <Row
+      type="flex"
+      style={{
+        paddingBottom: '80px',
+        flexGrow: '1',
+      }}
+    >
+      <Col
+        flex={1}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <PageVisibility onChange={handleVisibilityChange}>
+          <>
+            <JustQueued
+              request={justQueuedRequest}
+              pageIsVisible={pageIsVisible}
+              {...props}
+            />
+            <Row>
+              <Title
+                level={4}
+                style={{
+                  color: 'white',
+                }}
+              >
+                Coming Up
+              </Title>
+            </Row>
+            <ComingUp
+              requests={requests}
+              pageIsVisible={pageIsVisible}
+              {...props}
+            />
+          </>
+        </PageVisibility>
+      </Col>
+    </Row>
   );
 };
 

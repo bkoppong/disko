@@ -1,4 +1,5 @@
 const TerserPlugin = require('terser-webpack-plugin');
+const LodashModuleReplacementPlugin = ​require​('lodash-webpack-plugin');
 
 module.exports = {
   entry: './index.jsx',
@@ -18,6 +19,9 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
   },
+  plugins: [
+    new LodashModuleReplacementPlugin(),
+  ],
   optimization: {
     minimize: true,
     minimizer: [new TerserPlugin({

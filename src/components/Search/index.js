@@ -1,14 +1,12 @@
 import React from 'react';
 
-import { Row, Typography } from 'antd';
+import { Row, Col, Typography } from 'antd';
 
 import SearchResults from '../SearchResults';
 
 const { Title } = Typography;
 
 const Search = props => {
-  const { searchData } = props;
-
   return (
     <>
       <Row>
@@ -21,7 +19,16 @@ const Search = props => {
           Search
         </Title>
       </Row>
-      <SearchResults searchData={searchData} />
+      <Row
+        type="flex"
+        align="middle"
+        justify="center"
+        style={{ flexGrow: '1' }}
+      >
+        <Col flex={1}>
+          <SearchResults {...props} />
+        </Col>
+      </Row>
     </>
   );
 };

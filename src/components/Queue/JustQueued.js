@@ -26,7 +26,9 @@ const JustQueued = props => {
         </Title>
       </Row>
       <List size="small">
-        <QueueItem {...props} />
+        <div>
+          <QueueItem {...props} />
+        </div>
       </List>
     </>
   );

@@ -4,7 +4,7 @@ import { useFirestore } from 'react-redux-firebase';
 
 import { useSelector } from 'react-redux';
 
-import { Empty, Button, List, Typography } from 'antd';
+import { Empty, Button, List, Typography, Row } from 'antd';
 
 import { Trash, ChevronUp } from 'react-feather';
 
@@ -120,7 +120,16 @@ const ComingUp = props => {
   });
 
   if (!comingUpRequests.length) {
-    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="" />; // TODO: Make more attractive, center
+    return (
+      <Row
+        type="flex"
+        align="middle"
+        justify="center"
+        style={{ flexGrow: '1' }}
+      >
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="" />
+      </Row>
+    );
   }
 
   const limitedComingUpRequests = comingUpRequests.slice(0, limit);

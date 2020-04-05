@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 
-import { useFirestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import { useFirestoreConnect } from 'react-redux-firebase';
 
 import {
   GUEST_PROVIDERS_REFERENCE,

@@ -1,4 +1,4 @@
-import SpotifySearchBar from './SpotifySearchBar';
+import { withSpotify } from './spotify';
 import SpotifyPlayer from './SpotifyPlayer';
 
-export { SpotifySearchBar, SpotifyPlayer };
+export { withSpotify, SpotifyPlayer };

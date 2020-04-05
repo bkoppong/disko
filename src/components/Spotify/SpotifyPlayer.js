@@ -100,6 +100,11 @@ const SpotifyPlayer = ({
     [handleSpotifyAction],
   );
 
+  // const requestsReference = `rooms.${roomId}.requests`;
+  // const requests = useSelector(
+  //   state => state.firestore.ordered[requestsReference],
+  // );
+
   const requestCollectionRef = useMemo(() => {
     // shouldn't I use useFirestoreConnect?
     return firestore

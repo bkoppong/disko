@@ -1,23 +1,40 @@
 import React, { useEffect, useCallback, useMemo } from 'react';
 
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useFirebase } from 'react-redux-firebase';
 
 import Spotify from 'spotify-web-api-js';
 
+import {
+  GUEST_PROVIDERS_REFERENCE,
+  HOST_PROVIDERS_REFERENCE,
+} from '../../constants';
+
 const spotify = new Spotify();
 
 const withSpotify = WrappedComponent => {
   return props => {
-    const { hostProviderInfo, guestProviderInfo } = props;
-    // let disabled = true;
+    const hostProviderInfo = useSelector(
+      state => state.firestore.ordered[HOST_PROVIDERS_REFERENCE],
+    );
+    const guestProviderInfo = useSelector(
+      state => state.firestore.ordered[GUEST_PROVIDERS_REFERENCE],
+    );
 
-    const isHostComponent = hostProviderInfo;
+    const hostSpotifyAccessToken = hostProviderInfo
+      ? hostProviderInfo.find(provider => provider.name === 'spotify')
+          .accessToken
+      : null;
+    const guestSpotifyAccessToken = guestProviderInfo
+      ? guestProviderInfo.find(provider => provider.name === 'spotify')
+          .accessToken
+      : null;
 
-    const providerInfo = isHostComponent ? hostProviderInfo : guestProviderInfo;
+    const isHostComponent = hostSpotifyAccessToken;
 
-    const spotifyAccessToken = providerInfo ? providerInfo.accessToken : null;
+    const spotifyAccessToken =
+      hostSpotifyAccessToken || guestSpotifyAccessToken;
 
     const firebase = useFirebase();
 
