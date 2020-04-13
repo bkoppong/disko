@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useFirestoreConnect, isLoaded } from 'react-redux-firebase';
 
 import { Row, Col, Typography } from 'antd';
 
@@ -12,50 +10,28 @@ import PageVisibility from 'react-page-visibility';
 
 import LoadingQueue from './LoadingQueue';
 import ComingUp from './ComingUp';
-import JustQueued from './JustQueued';
+// import JustQueued from './JustQueued';
+
+import { useRequests } from '../../hooks';
 
 const { Title } = Typography;
 
-const Queue = props => {
-  const { roomId } = props;
-
-  const requestsReference = `rooms.${roomId}.requests`;
-
-  const requestsQuery = {
-    collection: `rooms/${roomId}/requests`,
-    // orderBy: [
-    //   ['upvotesCount', 'desc'],
-    //   ['creationTimestamp', 'asc'],
-    // ],
-    // limit: limit,
-    storeAs: requestsReference,
-  };
-
+const Queue = () => {
   const [pageIsVisible, setPageIsVisible] = useState(true);
-
-  const handleVisibilityChange = isVisible => {
+  const handleVisibilityChange = (isVisible) => {
     setPageIsVisible(isVisible);
   };
+  const requests = useRequests();
 
-  // Attach requests listener
-  useFirestoreConnect(requestsQuery);
-  // Get requests from redux state
-  const requests = useSelector(
-    state => state.firestore.ordered[requestsReference],
-  );
   // Show a skeleton while requests load
-  if (!isLoaded(requests)) {
+  if (!requests.loaded) {
     return <LoadingQueue />;
   }
 
-  const justQueuedRequest = requests
-    .filter(request => request.queueTimestamp)
-    .sort((a, b) => {
-      return b.queueTimestamp.seconds - a.queueTimestamp.seconds;
-    })
-    .find(() => {
-      return true;
-    }); // TODO: only show if it was queued within the last 10 minutes
+  // const justQueuedRequest = requests.played
+  //   .find(() => {
+  //     return true;
+  //   }); // TODO: only show if it was queued within the last 10 minutes
 
   return (
     <Row
@@ -74,11 +50,12 @@ const Queue = props => {
       >
         <PageVisibility onChange={handleVisibilityChange}>
           <>
-            <JustQueued
-              request={justQueuedRequest}
-              pageIsVisible={pageIsVisible}
-              {...props}
-            />
+            {
+              // <JustQueued
+              //   request={justQueuedRequest}
+              //   pageIsVisible={pageIsVisible}
+              // />
+            }
             <Row>
               <Title
                 level={4}
@@ -89,11 +66,7 @@ const Queue = props => {
                 Coming Up
               </Title>
             </Row>
-            <ComingUp
-              requests={requests}
-              pageIsVisible={pageIsVisible}
-              {...props}
-            />
+            <ComingUp pageIsVisible={pageIsVisible} />
           </>
         </PageVisibility>
       </Col>

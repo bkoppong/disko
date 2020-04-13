@@ -6,7 +6,7 @@ import { Row, Col, Button } from 'antd';
 
 import AuthenticateSpotify from './AuthenticateSpotify';
 
-const AuthenticatePage = props => {
+const AuthenticatePage = (props) => {
   const match = useRouteMatch();
 
   return (

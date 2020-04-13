@@ -1,71 +1,31 @@
-import React from 'react';
+import React, { lazy } from 'react';
 
-import { useSelector } from 'react-redux';
-
-import { useFirestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
-
-import { Redirect } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import { Col } from 'antd';
 
-// import Img from 'react-image';
-
-import Queue from '../Queue';
+import RoomBody from './RoomBody';
+import RoomFooter from './RoomFooter';
 import SearchBar from '../SearchBar';
-import Search from '../Search';
-import Player from '../Player';
 import LoadingPage from '../LoadingPage';
 import RoomHeader from './RoomHeader';
-import GuestTooltip from './GuestTooltip';
 
 import './index.css';
 
-const Room = props => {
-  const { roomId, hostActionComponents, ...rest } = props;
-  const searchEnabled = useSelector(state => state.search.searchEnabled);
+import { setRoomId } from '../../redux/actions';
 
-  const renderPlayer = () => {
-    if (!hostActionComponents) {
-      return null;
-    }
-    return <Player roomId={roomId} {...rest} />;
-  };
+import { useRoom } from '../../hooks';
 
-  const roomReference = `rooms.${roomId}`;
+const GuestTooltip = lazy(() => import('./GuestTooltip'));
 
-  const roomDataQuery = {
-    collection: 'rooms',
-    doc: roomId,
-    storeAs: roomReference,
-  };
+const Room = ({ roomId }) => {
+  const dispatch = useDispatch();
+  dispatch(setRoomId(roomId));
 
-  useFirestoreConnect([roomDataQuery]);
-
-  const roomSelector = useSelector(
-    state => state.firestore.ordered[roomReference],
-  );
-
-  if (!isLoaded(roomSelector)) {
+  const { id: queriedRoomId } = useRoom();
+  if (!queriedRoomId) {
     return <LoadingPage />;
   }
-
-  const roomDoesNotExist = isEmpty(roomSelector);
-
-  if (roomDoesNotExist) {
-    return <Redirect to="/" />;
-  }
-
-  const room = roomSelector[0];
-
-  const renderBody = () => {
-    const body = searchEnabled ? (
-      <Search room={room} />
-    ) : (
-      <Queue roomId={roomId} {...rest} />
-    );
-
-    return body;
-  };
 
   return (
     <Col
@@ -77,11 +37,11 @@ const Room = props => {
         flexDirection: 'column',
       }}
     >
-      <RoomHeader {...props} />
-      <SearchBar room={room} />
-      <GuestTooltip room={room} />
-      {renderBody()}
-      {renderPlayer()}
+      <RoomHeader />
+      <SearchBar />
+      <GuestTooltip />
+      <RoomBody />
+      <RoomFooter />
     </Col>
   );
 };

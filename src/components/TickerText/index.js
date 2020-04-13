@@ -6,13 +6,13 @@ import { OverflowDetector } from 'react-overflow';
 
 import { Typography } from 'antd';
 
-const TickerText = props => {
+const TickerText = (props) => {
   const { text, pageIsVisible } = props;
 
   const [overflow, setOverflow] = useState(false);
   const [tickerMoving, setTickerMoving] = useState(false);
 
-  const handleOverflowChange = isOverflowed => {
+  const handleOverflowChange = (isOverflowed) => {
     setOverflow(isOverflowed);
   };
 

@@ -1,8 +1,7 @@
 'use strict';
 
 const {
-	asyncRefreshSpotifyGuestToken,
-	asyncRefreshSpotifyHostToken,
+	asyncRefreshSpotifyToken,
 	spotifyToken,
 	spotifyRedirect,
 } = require('./spotifyApi');
@@ -14,8 +13,7 @@ const {
 } = require('./asyncUpdateAnonymousUsername');
 
 module.exports = {
-	asyncRefreshSpotifyGuestToken,
-	asyncRefreshSpotifyHostToken,
+	asyncRefreshSpotifyToken,
 	spotifyToken,
 	spotifyRedirect,
 	asyncGenerateNewRoom,

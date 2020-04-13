@@ -2,13 +2,46 @@
 
 const { admin, Spotify } = require('../resources');
 
-const asyncRefreshSpotifyHostToken = async (data, context) => {
+const asyncRefreshSpotifyGuestToken = async () => {
 	try {
-		if (!(context.auth && context.auth.uid)) {
-			throw new Error('User not authorized with spotify yet.');
+		const response = await Spotify.clientCredentialsGrant();
+		const body = response.body;
+		const expiresIn = body['expires_in'];
+		const accessToken = body['access_token'];
+		// console.log('The access token expires in ' + expiresIn)
+		// console.log('The access token is ' + accessToken)
+
+		const providerRef = admin
+			.firestore()
+			.collection('providers')
+			.doc('spotify');
+
+		await providerRef.update({
+			accessToken,
+			expiresIn,
+		});
+
+		return {
+			accessToken,
+			expiresIn,
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			error,
+		};
+	}
+};
+
+const asyncRefreshSpotifyToken = async (data, context) => {
+	try {
+		const { auth } = context;
+		console.log(auth);
+		if (!(auth && auth.uid && !auth.isAnonymous)) {
+			return await asyncRefreshSpotifyGuestToken();
 		}
 
-		const uid = context.auth.uid;
+		const uid = auth.uid;
 
 		const hostRef = admin
 			.firestore()
@@ -90,5 +123,5 @@ const asyncRefreshSpotifyHostToken = async (data, context) => {
 };
 
 module.exports = {
-	asyncRefreshSpotifyHostToken,
+	asyncRefreshSpotifyToken,
 };

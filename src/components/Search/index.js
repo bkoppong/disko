@@ -6,7 +6,7 @@ import SearchResults from '../SearchResults';
 
 const { Title } = Typography;
 
-const Search = props => {
+const Search = (props) => {
   return (
     <>
       <Row>
@@ -26,7 +26,7 @@ const Search = props => {
         style={{ flexGrow: '1' }}
       >
         <Col flex={1}>
-          <SearchResults {...props} />
+          <SearchResults />
         </Col>
       </Row>
     </>

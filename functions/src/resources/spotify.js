@@ -22,12 +22,17 @@ const Spotify = new SpotifyWebApi({
 // Want to get the uri the request is coming from so redirectUri can be set accordingly
 
 const OAUTH_SCOPES = [
-	'user-read-playback-state',
 	'streaming',
+	'user-read-playback-state',
 	'user-modify-playback-state',
 	'user-read-email',
 	'user-read-private',
 	'app-remote-control',
+	'user-library-read',
+	'user-library-modify',
+	'playlist-read-private',
+	'playlist-modify-private',
+	'ugc-image-upload',
 ];
 
 module.exports = {

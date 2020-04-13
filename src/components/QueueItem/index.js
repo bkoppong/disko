@@ -12,10 +12,10 @@ import { List, Typography, Col } from 'antd';
 
 import TickerText from '../TickerText';
 
-const QueueItem = props => {
-  const { request, pageIsVisible } = props;
+import { Lock } from 'react-feather';
 
-  const actions = props.actions || [null];
+const QueueItem = ({ request, pageIsVisible, actions }) => {
+  const actionsList = !request.queued && actions ? actions : [null];
 
   const track = request.trackData;
 
@@ -42,9 +42,15 @@ const QueueItem = props => {
 
   const displayNameColor = isAnonymous ? '#ccc' : '#1DB954';
 
+  const lockedInQueueOverlay = request.queued ? (
+    <div className="locked_in_queue_overlay">
+      <Lock />
+    </div>
+  ) : null;
+
   return (
     <List.Item
-      actions={actions}
+      actions={actionsList}
       style={{
         // overflow: 'hidden',
         alignItems: 'stretch',
@@ -57,6 +63,7 @@ const QueueItem = props => {
       >
         <a href={trackSpotifyUrl} target="_blank" rel="noopener noreferrer">
           <Img src={albumArtworkUrl} />
+          {lockedInQueueOverlay}
         </a>
       </Col>
       <Col
@@ -73,15 +80,11 @@ const QueueItem = props => {
         <TickerText text={trackName} pageIsVisible={pageIsVisible} />
         <Typography.Text
           style={{
-            fontWeight: '600',
-            fontSize: '.6em',
             color: '#ccc',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
             minWidth: '100%',
             position: 'absolute',
             bottom: '-10%',
+            fontSize: '.6em',
           }}
         >
           {primaryArtistName}
@@ -89,17 +92,13 @@ const QueueItem = props => {
       </Col>
       <Typography.Text
         style={{
-          fontWeight: '600',
-          fontSize: '.6em',
           color: displayNameColor,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
           position: 'absolute',
           right: '0px',
           bottom: '0px',
           lineHeight: 'initial',
           paddingBottom: '17px',
+          fontSize: '.6em',
         }}
       >
         {displayName}

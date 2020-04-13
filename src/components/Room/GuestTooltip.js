@@ -9,23 +9,25 @@ import { Affix, Tooltip } from 'antd';
 import { Users } from 'react-feather';
 
 import { GUEST_DISPLAY_NAME_REFERENCE } from '../../constants';
+import { useRoom } from '../../hooks';
 
-const GuestTooltip = props => {
-  const { room } = props;
+const GuestTooltip = () => {
+  const room = useRoom();
   const roomId = room.id;
 
-  const auth = useSelector(state => state.firebase.auth);
+  const auth = useSelector((state) => state.firebase.auth);
   const firestore = useFirestore();
 
   const guestDisplayNameSelector = useSelector(
-    state => state.firestore.ordered[GUEST_DISPLAY_NAME_REFERENCE],
+    (state) => state.firestore.ordered[GUEST_DISPLAY_NAME_REFERENCE],
   );
 
   if (
     isLoaded(auth) &&
     !isEmpty(auth) &&
     isLoaded(guestDisplayNameSelector) &&
-    !isEmpty(guestDisplayNameSelector)
+    !isEmpty(guestDisplayNameSelector) &&
+    roomId
   ) {
     const arrayUnion = firestore.FieldValue.arrayUnion;
     // const arrayRemove = firestore.FieldValue.arrayRemove;
@@ -58,7 +60,7 @@ const GuestTooltip = props => {
       >
         {room.hostDisplayName}
       </div>
-      {room.guestDisplayNames.map(displayName => (
+      {room.guestDisplayNames.map((displayName) => (
         <div
           key={`${displayName}_tooltip_item`}
           style={{

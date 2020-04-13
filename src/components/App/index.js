@@ -23,7 +23,7 @@ const initialState = window && window.__INITIAL_STATE__; // set initial state he
 const store = configureStore(initialState);
 // Initialize Firebase instance
 firebase.initializeApp(fbConfig);
-// firebase.analytics()
+firebase.analytics();
 
 export default function App() {
   return (

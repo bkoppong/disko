@@ -2,43 +2,19 @@ import React, { useState } from 'react';
 
 import { useSelector } from 'react-redux';
 
-import {
-  useFirebase,
-  useFirestore,
-  useFirestoreConnect,
-} from 'react-redux-firebase';
+import { useFirebase } from 'react-redux-firebase';
 
 import { Row, Col, Button } from 'antd';
-
-import { Trash } from 'react-feather';
 
 import Room from '../Room';
 import LoadingPage from '../LoadingPage';
 
-import { HOST_PROVIDERS_REFERENCE } from '../../constants';
-
-const HostRoomPage = props => {
-  const auth = useSelector(state => state.firebase.auth);
-  const profile = useSelector(state => state.firebase.profile);
+const HostRoomPage = (props) => {
+  const profile = useSelector((state) => state.firebase.profile);
 
   const firebase = useFirebase();
 
   const [loading, setLoading] = useState(false);
-
-  const firestoreHostProvidersQuery = {
-    collection: `hosts/${auth.uid}/providers`,
-    storeAs: HOST_PROVIDERS_REFERENCE,
-  };
-
-  useFirestoreConnect([firestoreHostProvidersQuery]);
-
-  // if (!isLoaded(hostProviders)) {
-  //   return <LoadingPage />;
-  // }
-
-  // if (isEmpty(hostProviders)) {
-  //   // redirect to home? maybe use youtube
-  // }
 
   const asyncGenerateNewRoom = firebase
     .functions()
@@ -79,38 +55,7 @@ const HostRoomPage = props => {
     );
   }
 
-  return (
-    <Room
-      roomId={profile.currentRoomId}
-      hostActionComponents={<HostActionComponents />}
-    />
-  );
-};
-
-const HostActionComponents = props => {
-  const auth = useSelector(state => state.firebase.auth);
-  const profile = useSelector(state => state.firebase.profile);
-
-  const firestore = useFirestore();
-
-  const handleCloseRoom = async () => {
-    await firestore
-      .collection('rooms')
-      .doc(profile.currentRoomId)
-      .delete();
-    await firestore
-      .collection('hosts')
-      .doc(auth.uid)
-      .update({
-        currentRoomId: firestore.FieldValue.delete(),
-      });
-  };
-
-  return (
-    <Button type="link" onClick={handleCloseRoom}>
-      <Trash />
-    </Button>
-  );
+  return <Room roomId={profile.currentRoomId} />;
 };
 
 export default HostRoomPage;

@@ -2,3 +2,19 @@
   max-height: 100px;
   overflow-y: scroll;
 }
+
+span.ant-typography {
+  color: white;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.currently_playing {
+  background-color: #333;
+}
+
+.currently_playing span {
+  padding-left: 10px;
+}

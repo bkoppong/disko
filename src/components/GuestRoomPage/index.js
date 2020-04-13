@@ -6,24 +6,16 @@ import { useSelector } from 'react-redux';
 
 import { useFirestoreConnect } from 'react-redux-firebase';
 
-import {
-  GUEST_PROVIDERS_REFERENCE,
-  GUEST_DISPLAY_NAME_REFERENCE,
-} from '../../constants';
+import { GUEST_DISPLAY_NAME_REFERENCE } from '../../constants';
 
 import Room from '../Room';
 
-const GuestRoomPage = props => {
+const GuestRoomPage = (props) => {
   let { roomId } = useParams();
 
   roomId = roomId.toUpperCase();
 
-  const auth = useSelector(state => state.firebase.auth);
-
-  const firestoreGuestProvidersQuery = {
-    collection: `providers`,
-    storeAs: GUEST_PROVIDERS_REFERENCE,
-  };
+  const auth = useSelector((state) => state.firebase.auth);
 
   const firestoreGuestNameQuery = {
     collection: `guests`,
@@ -31,19 +23,7 @@ const GuestRoomPage = props => {
     storeAs: GUEST_DISPLAY_NAME_REFERENCE,
   };
 
-  useFirestoreConnect([firestoreGuestProvidersQuery, firestoreGuestNameQuery]);
-
-  // const guestProviders = useSelector(
-  //   state => state.firestore.ordered[GUEST_PROVIDERS_REFERENCE],
-  // );
-
-  // if (!isLoaded(guestProviders)) {
-  //   return <LoadingPage />;
-  // }
-  //
-  // if (isEmpty(guestProviders)) {
-  //   // this means there is no collection? not realistic
-  // }
+  useFirestoreConnect([firestoreGuestNameQuery]);
 
   return <Room roomId={roomId} {...props} />;
 };

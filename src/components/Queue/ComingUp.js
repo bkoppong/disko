@@ -4,19 +4,21 @@ import { useFirestore } from 'react-redux-firebase';
 
 import { useSelector } from 'react-redux';
 
-import { Empty, Button, List, Typography, Row } from 'antd';
+import { Button, List, Typography, Row } from 'antd';
 
-import { Trash, ChevronUp } from 'react-feather';
+import { Trash, ChevronUp, Inbox } from 'react-feather';
 
 import { Flipper, Flipped } from 'react-flip-toolkit';
 
 import QueueItem from '../QueueItem';
 
-const ComingUpItem = props => {
-  const { request, index, roomId, ...rest } = props;
+import { useRequests } from '../../hooks';
 
-  const auth = useSelector(state => state.firebase.auth);
-  const profile = useSelector(state => state.firebase.profile);
+const ComingUpItem = ({ request, index, pageIsVisible, ...rest }) => {
+  const roomId = useSelector((state) => state.room.id);
+
+  const auth = useSelector((state) => state.firebase.auth);
+  const profile = useSelector((state) => state.firebase.profile);
 
   const uid = auth.uid;
 
@@ -97,27 +99,21 @@ const ComingUpItem = props => {
   return (
     <Flipped key={request.id} flipId={request.id}>
       <div>
-        <QueueItem request={request} actions={actions} {...rest} />
+        <QueueItem
+          request={request}
+          actions={actions}
+          pageIsVisible={pageIsVisible}
+          {...rest}
+        />
       </div>
     </Flipped>
   );
 };
 
-const ComingUp = props => {
-  const { requests, ...rest } = props;
+const ComingUp = ({ pageIsVisible, ...rest }) => {
+  const comingUpRequests = useRequests().notPlayed;
 
   const [limit, setLimit] = useState(5);
-
-  const cleanedRequests = requests.filter(
-    request =>
-      request.creationTimestamp && !request.fulfilled && !request.queued,
-  );
-
-  const comingUpRequests = cleanedRequests.sort((a, b) => {
-    const upvotesDifference = b.upvotesCount - a.upvotesCount;
-    if (upvotesDifference) return upvotesDifference;
-    return a.creationTimestamp.seconds - b.creationTimestamp.seconds;
-  });
 
   if (!comingUpRequests.length) {
     return (
@@ -127,13 +123,13 @@ const ComingUp = props => {
         justify="center"
         style={{ flexGrow: '1' }}
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="" />
+        <Inbox size={60} color="white" />
       </Row>
     );
   }
 
   const limitedComingUpRequests = comingUpRequests.slice(0, limit);
-  const flipKey = limitedComingUpRequests.map(result => result.id).join('');
+  const flipKey = limitedComingUpRequests.map((result) => result.id).join('');
 
   const onLoadMore = () => {
     setLimit(limit + 5);
@@ -170,6 +166,7 @@ const ComingUp = props => {
             key={`${index}_${request.id}`}
             request={request}
             index={index}
+            pageIsVisible={pageIsVisible}
             {...rest}
           />
         ))}

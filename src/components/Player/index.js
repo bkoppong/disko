@@ -1,37 +1,18 @@
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 
-import { useSelector } from 'react-redux';
-import { isLoaded, isEmpty } from 'react-redux-firebase';
+import { isBrowser } from 'react-device-detect';
 
-// const PROVIDER_NAMES = [
-//   'spotify',
-// ];
-
-import { HOST_PROVIDERS_REFERENCE } from '../../constants';
+import MobilePlayer from './MobilePlayer';
+import DesktopPlayer from './DesktopPlayer';
 
 import './index.css';
 
-const SpotifyPlayer = lazy(() => import('../Spotify/SpotifyPlayer'));
-
-const Player = props => {
-  const hostProviders = useSelector(
-    state => state.firestore.ordered[HOST_PROVIDERS_REFERENCE],
-  );
-
-  if (!isLoaded(hostProviders) || isEmpty(hostProviders)) {
-    return null;
+const Player = () => {
+  if (!isBrowser) {
+    return <MobilePlayer />;
   }
 
-  const hostProvidersMap = hostProviders.reduce((map, provider) => {
-    map[provider.name] = provider;
-    return map;
-  }, {});
-
-  return (
-    <Suspense fallback={null}>
-      <SpotifyPlayer hostProviderInfo={hostProvidersMap.spotify} {...props} />
-    </Suspense>
-  );
+  return <DesktopPlayer />;
 };
 
-export default Player;
+export default React.memo(Player);

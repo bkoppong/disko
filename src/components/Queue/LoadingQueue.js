@@ -2,10 +2,10 @@ import React from 'react';
 
 import { List, Skeleton } from 'antd';
 
-const LoadingQueue = props => {
+const LoadingQueue = (props) => {
   return (
     <List size="small">
-      {[1, 2, 3].map(item => {
+      {[1, 2, 3].map((item) => {
         return (
           <List.Item
             key={`skeleton_item_${item}`}

@@ -63,6 +63,7 @@ const asyncGenerateNewRoom = async (data, context) => {
 			hostProviders: hostProviders,
 			guestUids: [],
 			guestDisplayNames: [],
+			currentlyPlaying: '',
 		});
 
 		let hostUpdateTask = hostRef.update({

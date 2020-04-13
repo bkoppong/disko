@@ -6,7 +6,7 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 
 import Loader from 'react-loader-spinner';
 
-const LoadingPage = props => {
+const LoadingPage = (props) => {
   return (
     <Row
       type="flex"

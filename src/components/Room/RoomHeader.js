@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, lazy } from 'react';
+
+import { useSelector } from 'react-redux';
 
 import { Row, Col, Typography, Tooltip, Dropdown, Menu, Button } from 'antd';
 
 import { Share, Link } from 'react-feather';
 
 // import qrIcon from '../../assets/img/qrIcon.svg';
+const HostActionComponents = lazy(() => import('./HostActionComponents'));
 
 const { Title } = Typography;
 
-const RoomHeader = props => {
-  const { roomId, hostActionComponents } = props;
-
+const RoomHeader = () => {
+  const roomId = useSelector((state) => state.room.id);
   const [urlCopiedTooltipVisible, setUrlCopiedTooltipVisible] = useState(false);
 
   const showUrlCopiedTooltip = () => {
@@ -55,7 +57,9 @@ const RoomHeader = props => {
       </Col>
       <Col>
         <Row type="flex" align="middle" justify="end">
-          <Col>{hostActionComponents}</Col>
+          <Col>
+            <HostActionComponents />
+          </Col>
           <Col>
             <Tooltip
               placement="leftBottom"

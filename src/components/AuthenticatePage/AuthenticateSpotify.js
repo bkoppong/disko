@@ -8,7 +8,7 @@ import fetch from 'isomorphic-unfetch';
 
 import LoadingPage from '../LoadingPage';
 
-const AuthenticateSpotify = props => {
+const AuthenticateSpotify = (props) => {
   const location = useLocation();
   const history = useHistory();
 
@@ -25,7 +25,7 @@ const AuthenticateSpotify = props => {
   const error = query.get('error');
 
   const authenticateWithSpotify = async () => {
-    const spotifyTokenResponseReceived = async response => {
+    const spotifyTokenResponseReceived = async (response) => {
       const jsonData = await response.json();
       if (jsonData.token) {
         await firebase.auth().signInWithCustomToken(jsonData.token);

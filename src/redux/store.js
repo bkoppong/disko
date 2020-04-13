@@ -10,7 +10,7 @@ export default function configureStore(initialState, history) {
     typeof window === 'object' &&
       typeof window.devToolsExtension !== 'undefined'
       ? () => window.__REDUX_DEVTOOLS_EXTENSION__
-      : f => f,
+      : (f) => f,
   )(createStore);
   const store = createStoreWithMiddleware(rootReducer);
 

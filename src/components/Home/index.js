@@ -12,11 +12,11 @@ import diskoBall from '../../assets/img/disko_ball_gif.gif';
 
 const { Title } = Typography;
 
-const Home = props => {
+const Home = (props) => {
   const [roomIdToJoin, setRoomIdToJoin] = useState('');
   const history = useHistory();
 
-  const handleRoomIdInputChange = event => {
+  const handleRoomIdInputChange = (event) => {
     setRoomIdToJoin(event.target.value);
   };
 

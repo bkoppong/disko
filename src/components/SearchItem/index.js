@@ -9,7 +9,7 @@ import { List, Typography, Col } from 'antd';
 
 import TickerText from '../TickerText';
 
-const SearchItem = props => {
+const SearchItem = (props) => {
   const {
     track,
     handleSelectResult,

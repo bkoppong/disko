@@ -34,7 +34,7 @@ import LoadingPage from '../LoadingPage';
 const AnonymousRoute = ({ component: Component, ...rest }) => {
   const firebase = useFirebase();
 
-  const auth = useSelector(state => state.firebase.auth);
+  const auth = useSelector((state) => state.firebase.auth);
 
   if (!isLoaded(auth)) {
     return <LoadingPage />;
@@ -53,7 +53,7 @@ const AnonymousRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         return <Component {...props} />;
       }}
     />
@@ -61,8 +61,8 @@ const AnonymousRoute = ({ component: Component, ...rest }) => {
 };
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const auth = useSelector(state => state.firebase.auth);
-  const profile = useSelector(state => state.firebase.profile);
+  const auth = useSelector((state) => state.firebase.auth);
+  const profile = useSelector((state) => state.firebase.profile);
 
   if (!isLoaded(auth) || !isLoaded(profile)) {
     return <LoadingPage />;
@@ -82,7 +82,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         return <Component {...props} />;
       }}
     />

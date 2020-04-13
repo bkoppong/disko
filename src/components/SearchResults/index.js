@@ -15,18 +15,16 @@ import { GUEST_DISPLAY_NAME_REFERENCE } from '../../constants';
 
 import { endSearch } from '../../redux/actions';
 
-const SearchResults = props => {
-  const { room } = props;
+const SearchResults = (props) => {
+  const roomId = useSelector((state) => state.room.id);
 
-  const roomId = room.id;
-
-  const searchData = useSelector(state => state.search);
+  const searchData = useSelector((state) => state.search);
   const { searchResults, searchLoading } = searchData;
 
   const firestore = useFirestore();
-  const auth = useSelector(state => state.firebase.auth);
+  const auth = useSelector((state) => state.firebase.auth);
   const guestDisplayNameSelector = useSelector(
-    state => state.firestore.ordered[GUEST_DISPLAY_NAME_REFERENCE],
+    (state) => state.firestore.ordered[GUEST_DISPLAY_NAME_REFERENCE],
   );
   const dispatch = useDispatch();
   const end = () => {
@@ -43,9 +41,12 @@ const SearchResults = props => {
         type="flex"
         align="middle"
         justify="center"
-        style={{ flexGrow: '1' }}
+        style={{
+          flexGrow: '1',
+          paddingBottom: '80px',
+        }}
       >
-        <SearchIcon size={50} color="white" />
+        <SearchIcon size={60} color="white" />
       </Row>
     );
   }
@@ -68,7 +69,7 @@ const SearchResults = props => {
     displayName = auth.displayName || 'anonymous';
   }
 
-  const handleAddRequest = async trackData => {
+  const handleAddRequest = async (trackData) => {
     try {
       if (!trackData) {
         throw new Error('No valid track selected.');
@@ -115,7 +116,7 @@ const SearchResults = props => {
 
   return (
     <List size="small">
-      {searchResults.map(track => {
+      {searchResults.map((track) => {
         const handleSelectResult = () => {
           end();
           handleAddRequest(track);

@@ -6,9 +6,7 @@ import QueueItem from '../QueueItem';
 
 const { Title } = Typography;
 
-const JustQueued = props => {
-  const { request } = props;
-
+const JustQueued = ({ request, pageIsVisible }) => {
   if (!request) {
     return null;
   }
@@ -27,7 +25,7 @@ const JustQueued = props => {
       </Row>
       <List size="small">
         <div>
-          <QueueItem {...props} />
+          <QueueItem request={request} pageIsVisible={pageIsVisible} />
         </div>
       </List>
     </>

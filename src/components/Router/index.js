@@ -9,7 +9,7 @@ const GuestRoomPage = lazy(() => import('../GuestRoomPage'));
 const HostRoomPage = lazy(() => import('../HostRoomPage'));
 const AuthenticatePage = lazy(() => import('../AuthenticatePage'));
 
-const Router = props => {
+const Router = (props) => {
   return (
     <BrowserRouter>
       <Suspense fallback={<LoadingPage />}>
